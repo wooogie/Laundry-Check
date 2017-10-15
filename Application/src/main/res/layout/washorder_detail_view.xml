@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/name_lable"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:editable="false"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        tools:text="@string/laundry_name" />
+
+    <EditText
+        android:id="@+id/address_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:textSize="@dimen/text_font_size" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+    <TextView
+        android:id="@+id/address_lable"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:editable="false"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        tools:text="@string/laundry_name" />
+
+    <EditText
+        android:id="@+id/address_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/address"
+        android:textSize="@dimen/text_font_size" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+</LinearLayout>
