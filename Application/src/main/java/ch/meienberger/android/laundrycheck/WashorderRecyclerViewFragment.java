@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.example.android.recyclerview;
+package ch.meienberger.android.laundrycheck;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,11 +25,16 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
-import java.util.ArrayList;
+import ch.meienberger.android.laundrycheck.R;
 
-import ch.meienberger.common.Washorder;
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.meienberger.android.SQL.LaundrycheckDataSource;
+import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
 /**
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
@@ -40,10 +45,12 @@ public class WashorderRecyclerViewFragment extends Fragment {
     private static final String TAG = "WashorderRecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
-    private static final int DATASET_COUNT = 2;
+    private LaundrycheckDataSource dataSource;
+
 
     public WashorderRecyclerViewFragment() {
     }
+
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -77,7 +84,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
         rootView.setTag(TAG);
 
         // BEGIN_INCLUDE(initializeRecyclerView)
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.washorders_recyclerView);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -93,7 +100,14 @@ public class WashorderRecyclerViewFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new WashorderAdapter(mDataset);
+        //get already stored data to the adapter
+        //init SQL
+        dataSource = new LaundrycheckDataSource(this.getContext());
+        dataSource.open();
+        mDataset = (ArrayList<Washorder>)dataSource.getAllWashorders();
+        dataSource.close();
+
+        mAdapter = new WashorderAdapter(mDataset, dataSource);
         // Set Washorder as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
@@ -104,19 +118,11 @@ public class WashorderRecyclerViewFragment extends Fragment {
 
         // END_INCLUDE(initializeRecyclerView)
 
-        mButtonAddItem = (Button) rootView.findViewById(R.id.buttonAddItem);
+        mButtonAddItem = (Button) rootView.findViewById(R.id.button_add_washorder);
         mButtonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAdapter.addItem();
-            }
-        });
-
-        mButtonRemoveItem = (Button) rootView.findViewById(R.id.buttonRemoveItem);
-        mButtonRemoveItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAdapter.removeItem();
             }
         });
 
@@ -169,10 +175,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
      * from a local content provider or remote server.
      */
     private void initDataset() {
-        mDataset = new ArrayList<Washorder>();
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset.add(new Washorder());
-        }
+
     }
 
 

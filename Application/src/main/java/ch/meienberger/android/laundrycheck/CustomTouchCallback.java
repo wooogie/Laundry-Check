@@ -1,7 +1,9 @@
-package com.example.android.recyclerview;
+package ch.meienberger.android.laundrycheck;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+
+import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
 /**
  * Created by studio1 on 10.06.2016.

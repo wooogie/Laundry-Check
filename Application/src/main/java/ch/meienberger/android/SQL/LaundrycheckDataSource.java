@@ -121,7 +121,7 @@ public class LaundrycheckDataSource {
         List<Washorder> washorderslist = new ArrayList<>();
 
         Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-                washorder_columns, null, null, null, null, null);
+                washorder_columns, null, null, null, null, LaundrycheckDbHelper.COLUMN_ID +" DESC");
 
         cursor.moveToFirst();
         Washorder washorder;
@@ -136,5 +136,16 @@ public class LaundrycheckDataSource {
         cursor.close();
 
         return washorderslist;
+    }
+
+    public void deletewWashorder(Washorder curWashorder){
+        long id = curWashorder.getId();
+
+        database.delete(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
+                LaundrycheckDbHelper.COLUMN_ID + "=" + id,
+                null);
+
+        Log.d(LOG_TAG, "Washorder deletet! ID: " + id);
+
     }
 }

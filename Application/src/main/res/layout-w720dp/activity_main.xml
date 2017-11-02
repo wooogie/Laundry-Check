@@ -28,19 +28,10 @@
           android:orientation="vertical">
 
         <FrameLayout
-              style="@style/Widget.SampleMessageTile"
+              style="@style/Widget.MessageTile"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
-            <TextView
-                  style="@style/Widget.SampleMessage"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:paddingLeft="@dimen/margin_medium"
-                  android:paddingRight="@dimen/margin_medium"
-                  android:paddingTop="@dimen/margin_large"
-                  android:paddingBottom="@dimen/margin_large"
-                  android:text="@string/intro_message" />
         </FrameLayout>
 
         <View
@@ -49,7 +40,7 @@
               android:background="@android:color/darker_gray" />
 
         <fragment
-              android:name="com.example.android.common.logger.LogFragment"
+              android:name="ch.meienberger.android.common.logger.LogFragment"
               android:id="@+id/log_fragment"
               android:layout_width="match_parent"
               android:layout_height="0px"

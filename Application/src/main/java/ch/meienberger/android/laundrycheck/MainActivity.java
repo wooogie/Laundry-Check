@@ -15,22 +15,18 @@
 */
 
 
-package com.example.android.recyclerview;
+package ch.meienberger.android.laundrycheck;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ViewAnimator;
 
-import com.example.android.common.activities.SampleActivityBase;
-import com.example.android.common.logger.Log;
-import com.example.android.common.logger.LogFragment;
-import com.example.android.common.logger.LogWrapper;
-import com.example.android.common.logger.MessageOnlyLogFilter;
+import ch.meienberger.android.common.activities.ActivityBase;
+import ch.meienberger.android.common.logger.Log;
+import ch.meienberger.android.common.logger.LogWrapper;
 
-import ch.meienberger.common.SQL.WashRfidDataSource;
-import ch.meienberger.common.Washorder;
+import ch.meienberger.android.SQL.LaundrycheckDataSource;
 
 
 /**
@@ -40,12 +36,12 @@ import ch.meienberger.common.Washorder;
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
-public class MainActivity extends SampleActivityBase {
+public class MainActivity extends ActivityBase {
 
     public static final String TAG = "MainActivity";
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private WashRfidDataSource dataSource;
+    private LaundrycheckDataSource dataSource;
 
 
 
@@ -57,31 +53,26 @@ public class MainActivity extends SampleActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //init SQL
+        dataSource = new LaundrycheckDataSource(this);
+
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             WashorderRecyclerViewFragment fragment = new WashorderRecyclerViewFragment();
-            transaction.replace(R.id.sample_content_fragment, fragment);
+            transaction.replace(R.id.content_fragment, fragment);
             transaction.commit();
         }
 
-        //init SQL
-        Washorder testwash = new Washorder();
-        Log.d(LOG_TAG, "Washorderinventory: " + testwash.toString());
-
-        dataSource = new WashRfidDataSource(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem logToggle = menu.findItem(R.id.menu_toggle_log);
-        logToggle.setVisible(findViewById(R.id.sample_output) instanceof ViewAnimator);
-        logToggle.setTitle(mLogShown ? R.string.sample_hide_log : R.string.sample_show_log);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -89,16 +80,7 @@ public class MainActivity extends SampleActivityBase {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.menu_toggle_log:
-                mLogShown = !mLogShown;
-                ViewAnimator output = (ViewAnimator) findViewById(R.id.sample_output);
-                if (mLogShown) {
-                    output.setDisplayedChild(1);
-                } else {
-                    output.setDisplayedChild(0);
-                }
-                supportInvalidateOptionsMenu();
-                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -111,15 +93,9 @@ public class MainActivity extends SampleActivityBase {
         // Using Log, front-end to the logging chain, emulates android.util.log method signatures.
         Log.setLogNode(logWrapper);
 
-        // Filter strips out everything except the message text.
-        MessageOnlyLogFilter msgFilter = new MessageOnlyLogFilter();
-        logWrapper.setNext(msgFilter);
 
-        // On screen logging via a fragment with a TextView.
-        LogFragment logFragment = (LogFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.log_fragment);
-        msgFilter.setNext(logFragment.getLogView());
 
         Log.i(TAG, "Ready");
     }
+
 }

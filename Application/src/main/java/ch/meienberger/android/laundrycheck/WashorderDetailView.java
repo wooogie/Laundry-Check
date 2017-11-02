@@ -1,4 +1,4 @@
-package com.example.android.recyclerview;
+package ch.meienberger.android.laundrycheck;
 
 /**
  * Created by Silvan on 14.10.2017.
