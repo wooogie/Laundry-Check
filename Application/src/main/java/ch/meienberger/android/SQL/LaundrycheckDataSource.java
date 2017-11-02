@@ -76,6 +76,7 @@ public class LaundrycheckDataSource {
                 washorder_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + insertId,
                 null, null, null, null);
 
+        cursor.moveToFirst();
         Washorder washorder = cursorToWashorder(cursor);
         cursor.close();
 
@@ -93,7 +94,6 @@ public class LaundrycheckDataSource {
         int idPrice = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_PRICE);
         int idComments = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_COMMENTS);
 
-        cursor.moveToFirst();
         String name = cursor.getString(idName);
         String address = cursor.getString(idAddress);
         String deliverydate = cursor.getString(idDeliveryDate);
@@ -104,7 +104,6 @@ public class LaundrycheckDataSource {
         long id = cursor.getLong(idIndex);
 
         Washorder washorder = new Washorder();
-        //TODO:set id
         washorder.setId(id);
         washorder.setAddress(address);
         washorder.setDelivery_date(deliverydate);
