@@ -17,22 +17,24 @@
 <resources>
 
     <!-- Activity themes -->
+    <style name="Theme.Content" parent="Theme.Base" />
+    <!-- Activity themes -->
+    <style name="Theme.Base" parent="android:Theme.Material.Light">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
 
-    <style name="Theme.Base" parent="android:Theme.Light" />
+    <style name="AppTheme" parent="Theme.Content" />
 
-    <style name="Theme.Sample" parent="Theme.Base" />
-
-    <style name="AppTheme" parent="Theme.Sample" />
     <!-- Widget styling -->
-
     <style name="Widget" />
 
-    <style name="Widget.SampleMessage">
+    <style name="Widget.Message">
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:lineSpacingMultiplier">1.1</item>
     </style>
 
-    <style name="Widget.SampleMessageTile">
+    <style name="Widget.MessageTile">
         <item name="android:background">@drawable/tile</item>
         <item name="android:shadowColor">#7F000000</item>
         <item name="android:shadowDy">-3.5</item>
