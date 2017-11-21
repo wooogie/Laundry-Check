@@ -33,7 +33,7 @@
         android:editable="false"
         android:textSize="@dimen/text_font_size"
         android:textStyle="bold"
-        tools:text="@string/laundry_name" />
+        tools:text="@string/address" />
 
     <EditText
         android:id="@+id/address_editText"

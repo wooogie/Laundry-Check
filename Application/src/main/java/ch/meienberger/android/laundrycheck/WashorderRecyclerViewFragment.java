@@ -16,6 +16,7 @@
 
 package ch.meienberger.android.laundrycheck;
 
+import ch.meienberger.android.laundrycheck.adapter.WashorderRecyclerViewContentAdapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import ch.meienberger.android.common.logger.Log;
+
 
 import ch.meienberger.android.laundrycheck.R;
 
@@ -60,6 +68,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
     protected LayoutManagerType mCurrentLayoutManagerType;
 
     protected Button mButtonAddItem;
+    protected Button mClickedItem;
     protected Button mButtonRemoveItem;
 
     protected RecyclerView mRecyclerView;
@@ -110,6 +119,15 @@ public class WashorderRecyclerViewFragment extends Fragment {
         mAdapter = new WashorderAdapter(mDataset, dataSource);
         // Set Washorder as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
+
+        // Set Adapter for the onClick Listener
+        mRecyclerView.setAdapter(new WashorderRecyclerViewContentAdapter(mDataset, new WashorderRecyclerViewContentAdapter.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(Washorder item) {
+                Log.d(TAG, "Washorder " + item.getName() + " is clicked");
+            }
+        }));
 
 
         ItemTouchHelper.Callback callback = new CustomTouchCallback(mAdapter);
@@ -176,6 +194,26 @@ public class WashorderRecyclerViewFragment extends Fragment {
      */
     private void initDataset() {
 
+    }
+
+
+    /**
+     * Lifecycle methods
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+     Log.d(TAG, "method onResume is called. DB is getting opened");
+     dataSource.open();
+    }
+
+    @Override
+    public void onPause() {
+    super.onPause();
+
+    Log.d(TAG, "method onPause is called. DB is getting closed");
+    dataSource.close();
     }
 
 

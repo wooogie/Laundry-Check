@@ -154,7 +154,7 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
 
         //delete from DB
         mdataSource.open();
-        mdataSource.deletewWashorder(mDataSet.get(position));
+        mdataSource.deleteWashorder(mDataSet.get(position));
         mdataSource.close();
 
         //remove from Dataset

@@ -138,7 +138,7 @@ public class LaundrycheckDataSource {
         return washorderslist;
     }
 
-    public void deletewWashorder(Washorder curWashorder){
+    public void deleteWashorder(Washorder curWashorder){
         long id = curWashorder.getId();
 
         database.delete(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
