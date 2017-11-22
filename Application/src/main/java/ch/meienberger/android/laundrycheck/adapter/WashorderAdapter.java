@@ -61,7 +61,8 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView name;
+        private final TextView id;
 
         public ViewHolder(View v) {
             super(v);
@@ -69,14 +70,21 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Element " + getPosition() + " clicked.");
+                    Log.d(TAG, "Washorder with Id: " + getId().getText() + " clicked.");
+
                 }
             });
-            textView = (TextView) v.findViewById(R.id.textView);
+
+            //link view holder to xml layout
+            name = (TextView) v.findViewById(R.id.washorderRowName);
+            id = (TextView) v.findViewById(R.id.washorder_row_id);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getName() {
+            return name;
+        }
+        public TextView getId() {
+            return id;
         }
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
@@ -113,7 +121,10 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
         //viewHolder.getTextView().setText(mDataSet.get(position));
-        viewHolder.getTextView().setText(mDataSet.get(position).getName());
+        viewHolder.getName().setText(mDataSet.get(position).getName());
+
+        String tmp_string = Long.toString(mDataSet.get(position).getId());
+        viewHolder.getId().setText(tmp_string);
     }
     // END_INCLUDE(recyclerViewOnBindViewHolder)
 

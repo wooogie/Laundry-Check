@@ -117,18 +117,8 @@ public class WashorderRecyclerViewFragment extends Fragment {
         dataSource.close();
 
         mAdapter = new WashorderAdapter(mDataset, dataSource);
-        // Set Washorder as the adapter for RecyclerView.
+        // Set custom Washorderadapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
-
-        // Set Adapter for the onClick Listener
-        mRecyclerView.setAdapter(new WashorderRecyclerViewContentAdapter(mDataset, new WashorderRecyclerViewContentAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(Washorder item) {
-                Log.d(TAG, "Washorder " + item.getName() + " is clicked");
-            }
-        }));
-
 
         ItemTouchHelper.Callback callback = new CustomTouchCallback(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);

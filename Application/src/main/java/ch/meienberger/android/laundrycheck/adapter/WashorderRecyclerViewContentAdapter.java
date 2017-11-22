@@ -53,7 +53,7 @@ public class WashorderRecyclerViewContentAdapter extends RecyclerView.Adapter<Wa
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                name = (TextView) itemView.findViewById(R.id.textView);
+                name = (TextView) itemView.findViewById(R.id.washorderRowName);
             }
 
             public void bind(final Washorder item, final OnItemClickListener listener) {
