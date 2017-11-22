@@ -19,6 +19,8 @@ package ch.meienberger.android.laundrycheck.adapter;
 import ch.meienberger.android.SQL.LaundrycheckDataSource;
 import ch.meienberger.android.SQL.LaundrycheckDbHelper;
 import ch.meienberger.android.common.logger.Log;
+
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.meienberger.android.laundrycheck.MainActivity;
+import ch.meienberger.android.laundrycheck.WashorderDetailViewFragment;
 import ch.meienberger.android.laundrycheck.WashorderNameComparator;
 import ch.meienberger.android.laundrycheck.WashorderRecyclerViewFragment;
 import ch.meienberger.android.laundrycheck.Washorder;
@@ -51,10 +54,7 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
     private static final String TAG = "WashorderAdapter";
     private static LaundrycheckDataSource mdataSource;
     private ArrayList<Washorder> mDataSet;
-
-    public void setDataSource(LaundrycheckDataSource dataSource) {
-        this.mdataSource = dataSource;
-    }
+    private static Fragment mparentFragment;
 
     // BEGIN_INCLUDE(recyclerViewSampleViewHolder)
     /**
@@ -71,6 +71,18 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "Washorder with Id: " + getId().getText() + " clicked.");
+
+                    // Create new fragment and transaction
+                    Fragment DetailFragment = new WashorderDetailViewFragment();
+                    FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack if needed
+                    transaction.replace(R.id.content_fragment, DetailFragment);
+                    transaction.addToBackStack(null);
+
+                    // Commit the transaction
+                    transaction.commit();
 
                 }
             });
@@ -94,10 +106,11 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public WashorderAdapter(ArrayList<Washorder> dataSet, LaundrycheckDataSource dataSource) {
+    public WashorderAdapter(ArrayList<Washorder> dataSet, LaundrycheckDataSource dataSource, Fragment parentFragment) {
         //dataSource = new LaundrycheckDataSource(this.);
         mDataSet = dataSet;
         mdataSource = dataSource;
+        mparentFragment = parentFragment;
     }
 
     // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)

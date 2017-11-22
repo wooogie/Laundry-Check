@@ -44,15 +44,12 @@ import java.util.List;
 import ch.meienberger.android.SQL.LaundrycheckDataSource;
 import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
-/**
- * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
- * {@link GridLayoutManager}.
- */
+
+
 public class WashorderRecyclerViewFragment extends Fragment {
 
     private static final String TAG = "WashorderRecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private static final int SPAN_COUNT = 2;
     private LaundrycheckDataSource dataSource;
 
 
@@ -81,9 +78,6 @@ public class WashorderRecyclerViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-        initDataset();
     }
 
     @Override
@@ -116,7 +110,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
         mDataset = (ArrayList<Washorder>)dataSource.getAllWashorders();
         dataSource.close();
 
-        mAdapter = new WashorderAdapter(mDataset, dataSource);
+        mAdapter = new WashorderAdapter(mDataset, dataSource, this);
         // Set custom Washorderadapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
@@ -139,6 +133,10 @@ public class WashorderRecyclerViewFragment extends Fragment {
         return rootView;
     }
 
+    public void callWashorderDetailFragment(){
+
+    }
+
     /**
      * Set RecyclerView's LayoutManager to the one given.
      *
@@ -154,10 +152,6 @@ public class WashorderRecyclerViewFragment extends Fragment {
         }
 
         switch (layoutManagerType) {
-            case GRID_LAYOUT_MANAGER:
-                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
-                break;
             case LINEAR_LAYOUT_MANAGER:
                 mLayoutManager = new LinearLayoutManager(getActivity());
                 mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
@@ -179,11 +173,10 @@ public class WashorderRecyclerViewFragment extends Fragment {
     }
 
     /**
-     * Generates Strings for RecyclerView's adapter. This data would usually come
-     * from a local content provider or remote server.
+     * Calls Detail Fragment with the right Id
      */
-    private void initDataset() {
-
+    public void callWashorderDetailFragment(long cur_WashorderId){
+        return;
     }
 
 

@@ -44,10 +44,6 @@ public class MainActivity extends ActivityBase {
     private LaundrycheckDataSource dataSource;
 
 
-
-    // Whether the Log Fragment is currently shown
-    private boolean mLogShown;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +60,7 @@ public class MainActivity extends ActivityBase {
         }
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
