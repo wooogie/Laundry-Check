@@ -34,15 +34,34 @@ import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
 public class WashorderDetailViewFragment extends Fragment {
 
-    private static final String TAG = "WashorderRecyclerViewFragment";
+    public static final String ARG_WASHORDERID = "arg_washorderid";
+    private static final String TAG = "WashorderDetailViewFragment";
+
+    private static long mWashorderId;
     private LaundrycheckDataSource dataSource;
 
 
-    protected RecyclerView mRecyclerView;
+    protected EditText mEditTextName;
+    protected EditText mEditTextAddress;
+    //TODO
     protected Washorder mWashorder;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        //get selected WashorderId
+        Bundle args = getArguments();
+        mWashorderId = args.getLong(ARG_WASHORDERID,0);
+
+        Log.d(TAG, "Washorder with Id: " + mWashorderId + " selected.");
+        dataSource = new LaundrycheckDataSource(this.getContext());
+        dataSource.open();
+        mWashorder = dataSource.getWashorder(mWashorderId);
+        dataSource.close();
+
+
+
         super.onCreate(savedInstanceState);
     }
 
@@ -52,15 +71,20 @@ public class WashorderDetailViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.washorder_detail_view, container, false);
         rootView.setTag(TAG);
 
-        // BEGIN_INCLUDE(initializeRecyclerView)
-        //mRecyclerView = (RecyclerView) rootView.findViewById(R.id.washorders_recyclerView);
+        Log.d(TAG, "Washorder with Id: " + mWashorder.getId() + " is displaying.");
 
 
-        //get already stored data to the adapter
-        //init SQL
-        dataSource = new LaundrycheckDataSource(this.getContext());
-        // END_INCLUDE(initializeRecyclerView)
 
+        // BEGIN_INCLUDE
+        mEditTextName = (EditText) rootView.findViewById(R.id.washorderdetail_name_editText);
+        mEditTextAddress = (EditText) rootView.findViewById(R.id.washorderdetail_address_editText);
+        //TODO
+
+        // END_INCLUDE(
+
+        //Fill Fields
+        mEditTextName.setText(mWashorder.getName());
+        mEditTextAddress.setText(mWashorder.getAddress());
 
         return rootView;
     }
@@ -88,7 +112,9 @@ public class WashorderDetailViewFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        Log.d(TAG, "method onPause is called. DB is getting closed");
+        Log.d(TAG, "method onPause is called. Date is going to be saved and DB is getting closed");
+
+
         dataSource.close();
     }
 

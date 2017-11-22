@@ -4,19 +4,29 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
     <TextView
         android:id="@+id/name_lable"
         android:layout_width="match_parent"
         android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
         android:editable="false"
+        android:text="@string/laundry_name"
         android:textSize="@dimen/text_font_size"
         android:textStyle="bold"
+        android:visibility="visible"
         tools:text="@string/laundry_name" />
 
     <EditText
-        android:id="@+id/address_editText"
+        android:id="@+id/washorderdetail_name_editText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
@@ -30,15 +40,21 @@
         android:id="@+id/address_lable"
         android:layout_width="match_parent"
         android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
         android:editable="false"
+        android:text="@string/address"
         android:textSize="@dimen/text_font_size"
         android:textStyle="bold"
+        android:visibility="visible"
         tools:text="@string/address" />
 
     <EditText
-        android:id="@+id/address_editText"
+        android:id="@+id/washorderdetail_address_editText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/address"

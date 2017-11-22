@@ -83,6 +83,22 @@ public class LaundrycheckDataSource {
         return washorder;
     }
 
+    /*
+     * Get the washorder by Id
+     */
+    public Washorder getWashorder(long Id) {
+
+        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
+                washorder_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + Id,
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        Washorder washorder = cursorToWashorder(cursor);
+        cursor.close();
+
+        return washorder;
+    }
+
 
     private Washorder cursorToWashorder(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_ID);

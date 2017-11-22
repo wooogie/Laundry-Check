@@ -20,6 +20,7 @@ import ch.meienberger.android.SQL.LaundrycheckDataSource;
 import ch.meienberger.android.SQL.LaundrycheckDbHelper;
 import ch.meienberger.android.common.logger.Log;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -72,8 +73,12 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
                 public void onClick(View v) {
                     Log.d(TAG, "Washorder with Id: " + getId().getText() + " clicked.");
 
-                    // Create new fragment and transaction
+                    // Create new fragment with the WashorderID as arg and a new transaction
                     Fragment DetailFragment = new WashorderDetailViewFragment();
+                    Bundle args = new Bundle();
+                    args.putLong(WashorderDetailViewFragment.ARG_WASHORDERID, Long.parseLong(getId().getText().toString()));
+                    DetailFragment.setArguments(args);
+
                     FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();
 
                     // Replace whatever is in the fragment_container view with this fragment,
