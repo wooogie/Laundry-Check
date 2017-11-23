@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
     <Space
         android:layout_width="match_parent"
@@ -11,7 +12,7 @@
     <TextView
         android:id="@+id/name_lable"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/properties_heigh"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_medium"
         android:layout_marginRight="@dimen/margin_medium"
         android:editable="false"
@@ -19,7 +20,8 @@
         android:textSize="@dimen/text_font_size"
         android:textStyle="bold"
         android:visibility="visible"
-        tools:text="@string/laundry_name" />
+        tools:text="@string/laundry_name"
+        android:layout_weight="0.00" />
 
     <EditText
         android:id="@+id/washorderdetail_name_editText"
@@ -39,7 +41,7 @@
     <TextView
         android:id="@+id/address_lable"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/properties_heigh"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_medium"
         android:layout_marginRight="@dimen/margin_medium"
         android:editable="false"
@@ -58,6 +60,113 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/address"
+        android:textSize="@dimen/text_font_size" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+    <TextView
+        android:id="@+id/delivery_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:editable="false"
+        android:text="@string/delivery_date"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <EditText
+        android:id="@+id/washorderdetail_delivery_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/delivery_date"
+        android:textSize="@dimen/text_font_size" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+    <TextView
+        android:id="@+id/pickup_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:editable="false"
+        android:text="@string/pickup_date"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <EditText
+        android:id="@+id/washorderdetail_pickup_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/pickup_date"
+        android:textSize="@dimen/text_font_size" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+    <TextView
+        android:id="@+id/price_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:editable="false"
+        android:text="@string/price"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <EditText
+        android:id="@+id/washorderdetail_price_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/price"
+        android:textSize="@dimen/text_font_size" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+    <TextView
+        android:id="@+id/comments_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:editable="false"
+        android:text="@string/comment"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <EditText
+        android:id="@+id/washorderdetail_comment_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/properties_heigh"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:textSize="@dimen/text_font_size" />
 
     <Space

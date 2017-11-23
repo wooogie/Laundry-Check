@@ -28,6 +28,7 @@
     <string name="pickup_date">Pickup date</string>
     <string name="clothes_count">Clothes count</string>
     <string name="comment">Comment</string>
+    <string name="price">Price</string>
     <string name="button_add_washorder">Add new washorder</string>
 
 </resources>

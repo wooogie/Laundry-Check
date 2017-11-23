@@ -43,7 +43,10 @@ public class WashorderDetailViewFragment extends Fragment {
 
     protected EditText mEditTextName;
     protected EditText mEditTextAddress;
-    //TODO
+    protected EditText mEditTextDeliveryDate;
+    protected EditText mEditTextPickupDate;
+    protected EditText mEditTextPrice;
+    protected EditText mEditTextComment;
     protected Washorder mWashorder;
 
 
@@ -78,13 +81,21 @@ public class WashorderDetailViewFragment extends Fragment {
         // BEGIN_INCLUDE
         mEditTextName = (EditText) rootView.findViewById(R.id.washorderdetail_name_editText);
         mEditTextAddress = (EditText) rootView.findViewById(R.id.washorderdetail_address_editText);
-        //TODO
+        mEditTextDeliveryDate = (EditText) rootView.findViewById(R.id.washorderdetail_delivery_editText);
+        mEditTextPickupDate = (EditText) rootView.findViewById(R.id.washorderdetail_pickup_editText);
+        mEditTextPrice = (EditText) rootView.findViewById(R.id.washorderdetail_price_editText);
+        mEditTextComment = (EditText) rootView.findViewById(R.id.washorderdetail_comment_editText);
+        mEditTextAddress = (EditText) rootView.findViewById(R.id.washorderdetail_address_editText);
 
         // END_INCLUDE(
 
         //Fill Fields
         mEditTextName.setText(mWashorder.getName());
         mEditTextAddress.setText(mWashorder.getAddress());
+        mEditTextDeliveryDate.setText(mWashorder.getDelivery_date());
+        mEditTextPickupDate.setText(mWashorder.getPickup_date());
+        mEditTextPrice.setText(String.valueOf(mWashorder.getPrice()));
+        mEditTextComment.setText(mWashorder.getComments());
 
         return rootView;
     }

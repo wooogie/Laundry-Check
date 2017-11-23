@@ -6,7 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.content.ContentValues;
 import android.database.Cursor;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ch.meienberger.android.laundrycheck.Washorder;
@@ -60,10 +63,16 @@ public class LaundrycheckDataSource {
     Insert a new Washorder into the DB and return the insered as Washorder
      */
     public Washorder createWashorder(String name) {
+
+        //generate Date
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String formattedDate = df.format(c.getTime());
+
         ContentValues values = new ContentValues();
         values.put(LaundrycheckDbHelper.COLUMN_NAME, name);
         values.put(LaundrycheckDbHelper.COLUMN_ADDRESS, "");
-        values.put(LaundrycheckDbHelper.COLUMN_DELIVERY_DATE, "");
+        values.put(LaundrycheckDbHelper.COLUMN_DELIVERY_DATE, formattedDate);
         values.put(LaundrycheckDbHelper.COLUMN_PICKUP_DATE, "");
         values.put(LaundrycheckDbHelper.COLUMN_CLOTHES_COUNT, 0);
         values.put(LaundrycheckDbHelper.COLUMN_PRICE, 0);

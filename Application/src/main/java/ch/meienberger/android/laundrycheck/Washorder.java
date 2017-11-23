@@ -84,12 +84,4 @@ public class Washorder {
         this.price = price;
     }
 
-    //for test and remove after, TODO
-    @Override
-    public String toString() {
-       String output = "Id = " + this.id + " ; Name = " + this.name;
-
-        return output;
-    }
-
 }
