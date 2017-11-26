@@ -1,11 +1,11 @@
 package ch.meienberger.android.SQL;
 
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.content.ContentValues;
-import android.database.Cursor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,12 +13,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import ch.meienberger.android.laundrycheck.Washorder;
-import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
 
-public class LaundrycheckDataSource {
+public class WashorderDataSource {
 
-    private static final String LOG_TAG = LaundrycheckDataSource.class.getSimpleName();
+    private static final String LOG_TAG = WashorderDataSource.class.getSimpleName();
 
     private SQLiteDatabase database;
     private LaundrycheckDbHelper dbHelper;
@@ -36,7 +35,7 @@ public class LaundrycheckDataSource {
 /*
     Db Helper gets created
  */
-    public LaundrycheckDataSource(Context context) {
+    public WashorderDataSource(Context context) {
         Log.d(LOG_TAG, "Datasource creates the dbHelper.");
         dbHelper = new LaundrycheckDbHelper(context);
     }
@@ -163,6 +162,9 @@ public class LaundrycheckDataSource {
         return washorderslist;
     }
 
+    /*
+     * Deletes the specific washorder form the DB
+     */
     public void deleteWashorder(Washorder curWashorder){
         long id = curWashorder.getId();
 
@@ -172,5 +174,33 @@ public class LaundrycheckDataSource {
 
         Log.d(LOG_TAG, "Washorder deletet! ID: " + id);
 
+    }
+
+    /*
+     * Update an existing Washorder in the DB
+     */
+    public Washorder updateWashorder(Washorder changedWashorder) {
+        ContentValues values = new ContentValues();
+        values.put(LaundrycheckDbHelper.COLUMN_NAME, changedWashorder.getName());
+        values.put(LaundrycheckDbHelper.COLUMN_ADDRESS, changedWashorder.getAddress());
+        values.put(LaundrycheckDbHelper.COLUMN_DELIVERY_DATE, changedWashorder.getDelivery_date());
+        values.put(LaundrycheckDbHelper.COLUMN_PICKUP_DATE, changedWashorder.getPickup_date());
+        values.put(LaundrycheckDbHelper.COLUMN_PRICE, changedWashorder.getPrice());
+        values.put(LaundrycheckDbHelper.COLUMN_COMMENTS, changedWashorder.getComments());
+
+        database.update(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
+                values,
+                LaundrycheckDbHelper.COLUMN_ID + "=" + changedWashorder.getId(),
+                null);
+
+        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
+                washorder_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + changedWashorder.getId(),
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        Washorder washorder = cursorToWashorder(cursor);
+        cursor.close();
+
+        return washorder;
     }
 }

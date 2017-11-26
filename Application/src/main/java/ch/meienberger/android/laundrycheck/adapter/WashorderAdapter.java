@@ -16,44 +16,33 @@
 
 package ch.meienberger.android.laundrycheck.adapter;
 
-import ch.meienberger.android.SQL.LaundrycheckDataSource;
-import ch.meienberger.android.SQL.LaundrycheckDbHelper;
+import ch.meienberger.android.SQL.WashorderDataSource;
 import ch.meienberger.android.common.logger.Log;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
 
 import ch.meienberger.android.laundrycheck.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ch.meienberger.android.laundrycheck.MainActivity;
 import ch.meienberger.android.laundrycheck.WashorderDetailViewFragment;
-import ch.meienberger.android.laundrycheck.WashorderNameComparator;
-import ch.meienberger.android.laundrycheck.WashorderRecyclerViewFragment;
 import ch.meienberger.android.laundrycheck.Washorder;
-
-import static ch.meienberger.android.common.ISO8601.now;
-import static ch.meienberger.android.common.ISO8601.toCalendar;
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
  */
 public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.ViewHolder>  {
     private static final String TAG = "WashorderAdapter";
-    private static LaundrycheckDataSource mdataSource;
+    private static WashorderDataSource mdataSource;
     private ArrayList<Washorder> mDataSet;
     private static Fragment mparentFragment;
 
@@ -79,7 +68,7 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
                     args.putLong(WashorderDetailViewFragment.ARG_WASHORDERID, Long.parseLong(getId().getText().toString()));
                     DetailFragment.setArguments(args);
 
-                    FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();
+                    android.support.v4.app.FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();
 
                     // Replace whatever is in the fragment_container view with this fragment,
                     // and add the transaction to the back stack if needed
@@ -111,8 +100,8 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public WashorderAdapter(ArrayList<Washorder> dataSet, LaundrycheckDataSource dataSource, Fragment parentFragment) {
-        //dataSource = new LaundrycheckDataSource(this.);
+    public WashorderAdapter(ArrayList<Washorder> dataSet, WashorderDataSource dataSource, Fragment parentFragment) {
+        //dataSource = new WashorderDataSource(this.);
         mDataSet = dataSet;
         mdataSource = dataSource;
         mparentFragment = parentFragment;

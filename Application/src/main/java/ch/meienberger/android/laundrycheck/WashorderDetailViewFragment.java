@@ -4,33 +4,15 @@ package ch.meienberger.android.laundrycheck;
  * Created by Silvan on 14.10.2017.
  */
 
-import ch.meienberger.android.laundrycheck.adapter.WashorderRecyclerViewContentAdapter;
+import ch.meienberger.android.SQL.WashorderDataSource;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.view.inputmethod.InputMethodManager;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import ch.meienberger.android.common.logger.Log;
-
-
-import ch.meienberger.android.laundrycheck.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.meienberger.android.SQL.LaundrycheckDataSource;
-import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
 public class WashorderDetailViewFragment extends Fragment {
 
@@ -38,7 +20,7 @@ public class WashorderDetailViewFragment extends Fragment {
     private static final String TAG = "WashorderDetailViewFragment";
 
     private static long mWashorderId;
-    private LaundrycheckDataSource dataSource;
+    private WashorderDataSource dataSource;
 
 
     protected EditText mEditTextName;
@@ -58,7 +40,7 @@ public class WashorderDetailViewFragment extends Fragment {
         mWashorderId = args.getLong(ARG_WASHORDERID,0);
 
         Log.d(TAG, "Washorder with Id: " + mWashorderId + " selected.");
-        dataSource = new LaundrycheckDataSource(this.getContext());
+        dataSource = new WashorderDataSource(this.getContext());
         dataSource.open();
         mWashorder = dataSource.getWashorder(mWashorderId);
         dataSource.close();
@@ -124,8 +106,13 @@ public class WashorderDetailViewFragment extends Fragment {
         super.onPause();
 
         Log.d(TAG, "method onPause is called. Date is going to be saved and DB is getting closed");
-
-
+        mWashorder.setName(mEditTextName.getText().toString());
+        mWashorder.setAddress(mEditTextAddress.getText().toString());
+        mWashorder.setDelivery_date(mEditTextDeliveryDate.getText().toString());
+        mWashorder.setPickup_date(mEditTextPickupDate.getText().toString());
+        mWashorder.setPrice(Integer.parseInt(mEditTextPrice.getText().toString()));
+        mWashorder.setComments(mEditTextComment.getText().toString());
+        dataSource.updateWashorder(mWashorder);
         dataSource.close();
     }
 

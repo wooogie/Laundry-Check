@@ -15,8 +15,10 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
     public static final int DB_VERSION = 1;
 
     public static final String TABLE_WASH_ORDERS = "wash_orders";
+    public static final String TABLE_CLOTHES = "clothes";
 
     public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_RFID_ID = "rfid_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_DELIVERY_DATE = "delivery_date";
@@ -24,6 +26,11 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PRICE = "price";
     public static final String COLUMN_CLOTHES_COUNT = "clothes_count";
     public static final String COLUMN_COMMENTS = "comments";
+    public static final String COLUMN_PICTURE = "picture";
+    public static final String COLUMN_WASHCOUNT = "washcount";
+    public static final String COLUMN_LAST_WASHED = "last_washed";
+    public static final String COLUMN_PIECES = "pieces";
+    public static final String COLUMN_CLOTHESTYPE = "CLOTHESTYPE";
 
 
     public static final String SQL_CREATE =
@@ -35,7 +42,16 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
                     COLUMN_PICKUP_DATE + " TEXT NOT NULL, " +
                     COLUMN_PRICE + " INTEGER NOT NULL, " +
                     COLUMN_COMMENTS + " TEXT NOT NULL, " +
-                    COLUMN_CLOTHES_COUNT + " INTEGER NOT NULL);";
+                    COLUMN_CLOTHES_COUNT + " INTEGER NOT NULL);" +
+            "CREATE TABLE " + TABLE_CLOTHES +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_NAME + " TEXT NOT NULL, " +
+                    COLUMN_RFID_ID + " TEXT NOT NULL, " +
+                    COLUMN_PICTURE + " TEXT NOT NULL, " +
+                    COLUMN_WASHCOUNT + " INTEGER NOT NULL, " +
+                    COLUMN_LAST_WASHED + " TEXT NOT NULL, " +
+                    COLUMN_PIECES + " INTEGER NOT NULL, " +
+                    COLUMN_CLOTHESTYPE + " INTEGER NOT NULL);";
 
 
     public LaundrycheckDbHelper(Context context) {

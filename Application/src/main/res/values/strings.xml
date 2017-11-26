@@ -18,6 +18,8 @@
 <resources>
     <string name="app_name">Laundry check</string>
     <string name="action_settings">Settings</string>
+    <string name="action_washorder">Washorders</string>
+    <string name="action_clothes">Clothes inventory</string>
 
     <string name="element_text">Element</string>
     <string name="grid_layout_manager">Grid Layout Manager</string>
@@ -30,5 +32,6 @@
     <string name="comment">Comment</string>
     <string name="price">Price</string>
     <string name="button_add_washorder">Add new washorder</string>
+    <string name="button_add_clothes">Add new clothing</string>
 
 </resources>

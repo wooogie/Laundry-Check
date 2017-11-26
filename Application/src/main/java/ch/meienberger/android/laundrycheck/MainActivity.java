@@ -18,44 +18,42 @@
 package ch.meienberger.android.laundrycheck;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
+
+import ch.meienberger.android.SQL.WashorderDataSource;
 import ch.meienberger.android.common.activities.ActivityBase;
 import ch.meienberger.android.common.logger.Log;
 import ch.meienberger.android.common.logger.LogWrapper;
 
-import ch.meienberger.android.SQL.LaundrycheckDataSource;
 
-
-/**
- * A simple launcher activity containing a summary sample description, sample log and a custom
- * {@link android.support.v4.app.Fragment} which can display a view.
- * <p>
- * For devices with displays with a width of 720dp or greater, the sample log is always visible,
- * on other devices it's visibility is controlled by an item on the Action Bar.
- */
 public class MainActivity extends ActivityBase {
 
     public static final String TAG = "MainActivity";
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private LaundrycheckDataSource dataSource;
+    private WashorderDataSource dataSource;
 
+    public MainActivity (){}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Declair Menu
+       // setHasOptionsMenu(true);
+
         //init SQL
-        dataSource = new LaundrycheckDataSource(this);
+        dataSource = new WashorderDataSource(this);
 
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            WashorderRecyclerViewFragment fragment = new WashorderRecyclerViewFragment();
-            transaction.replace(R.id.content_fragment, fragment);
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            WashorderRecyclerViewFragment washorderfragment = new WashorderRecyclerViewFragment();
+            transaction.replace(R.id.content_fragment, washorderfragment);
             transaction.commit();
         }
 
@@ -64,7 +62,7 @@ public class MainActivity extends ActivityBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+       // getMenuInflater().inflate(R.menu.menu_mainactivity, menu);
         return true;
     }
 
@@ -76,9 +74,25 @@ public class MainActivity extends ActivityBase {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        /*switch(item.getItemId()) {
+            case R.id.action_clothes:
+                Log.d(TAG, "Clothes inventory is called.");
 
-        }
+                // Create new fragment with the WashorderID as arg and a new transaction
+                ClothesinventoryRecyclerViewFragment ClothesInven = new ClothesinventoryRecyclerViewFragment();
+
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack if needed
+                transaction.replace(R.id.content_fragment, ClothesInven);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
+                break;
+
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
