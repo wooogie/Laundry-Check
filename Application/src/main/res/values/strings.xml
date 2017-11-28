@@ -33,5 +33,6 @@
     <string name="price">Price</string>
     <string name="button_add_washorder">Add new washorder</string>
     <string name="button_add_clothes">Add new clothing</string>
-
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
