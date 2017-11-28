@@ -27,8 +27,6 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -37,10 +35,10 @@
 
 
         <Button
+            android:id="@+id/button_add_clothes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_add_washorder"
-            android:id="@+id/button_add_washorder" />
+            android:text="@string/button_add_clothes" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

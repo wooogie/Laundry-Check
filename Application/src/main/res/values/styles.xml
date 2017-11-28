@@ -17,12 +17,7 @@
 <resources>
 
     <!-- Activity themes -->
-    <style name="Theme.Content" parent="Theme.Base" />
-    <!-- Activity themes -->
-    <style name="Theme.Base" parent="android:Theme.Material.Light">
-        <item name="android:colorPrimary">@color/colorPrimary</item>
-        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-    </style>
+    <style name="Theme.Content" parent="Theme.AppCompat" />
 
     <style name="AppTheme" parent="Theme.Content" />
 
