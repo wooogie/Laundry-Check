@@ -44,11 +44,9 @@ public class MainActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Declair Menu
-       // setHasOptionsMenu(true);
-
         //init SQL
         dataSource = new WashorderDataSource(this);
+
 
         if (savedInstanceState == null) {
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -62,7 +60,8 @@ public class MainActivity extends ActivityBase {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       // getMenuInflater().inflate(R.menu.menu_mainactivity, menu);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
