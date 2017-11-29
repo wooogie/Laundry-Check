@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Start logging
+        initializeLogging();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,8 +91,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -99,27 +102,59 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        /*switch(item.getItemId()) {
+    public boolean onNavigationItemSelected(MenuItem item) {
+        Log.d(TAG, "Naviagation is called: " + item.getItemId() );
+
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        switch(item.getItemId()) {
             case R.id.action_clothes:
                 Log.d(TAG, "Clothes inventory is called.");
 
-                // Create new fragment with the WashorderID as arg and a new transaction
-                ClothesinventoryRecyclerViewFragment ClothesInven = new ClothesinventoryRecyclerViewFragment();
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                // Create new fragment
+                ClothesinventoryRecyclerViewFragment clothesInven = new ClothesinventoryRecyclerViewFragment();
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack if needed
-                transaction.replace(R.id.content_fragment, ClothesInven);
+                transaction.replace(R.id.content_fragment, clothesInven);
                 transaction.addToBackStack(null);
 
                 // Commit the transaction
                 transaction.commit();
                 break;
 
-        }*/
-        return super.onOptionsItemSelected(item);
+            case R.id.action_washorder:
+                Log.d(TAG, "Washorder is called.");
+
+                // Create new fragment
+                WashorderRecyclerViewFragment washorder = new WashorderRecyclerViewFragment();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack if needed
+                transaction.replace(R.id.content_fragment, washorder);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
+                break;
+
+        }
+
+        //Close Navigation
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /** Create a chain of targets that will receive log data */
@@ -129,13 +164,7 @@ public class MainActivity extends AppCompatActivity
         // Using Log, front-end to the logging chain, emulates android.util.log method signatures.
         Log.setLogNode(logWrapper);
 
-
-
         Log.i(TAG, "Ready");
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
 }
