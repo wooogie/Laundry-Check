@@ -19,6 +19,7 @@ package ch.meienberger.android.laundrycheck;
 import ch.meienberger.android.SQL.WashorderDataSource;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,7 +55,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
 
     protected LayoutManagerType mCurrentLayoutManagerType;
 
-    protected Button mButtonAddItem;
+    protected FloatingActionButton mButtonAddItem;
     protected Button mClickedItem;
     protected Button mButtonRemoveItem;
 
@@ -110,14 +111,13 @@ public class WashorderRecyclerViewFragment extends Fragment {
 
         // END_INCLUDE(initializeRecyclerView)
 
-        mButtonAddItem = (Button) rootView.findViewById(R.id.button_add_washorder);
+        mButtonAddItem = (FloatingActionButton) rootView.findViewById(R.id.button_add_washorder);
         mButtonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAdapter.addItem();
             }
         });
-
 
 
         return rootView;

@@ -15,9 +15,9 @@
  limitations under the License.
 -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:Application="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,16 +35,17 @@
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true">
 
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_add_washorder"
-            android:id="@+id/button_add_washorder" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/washorders_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_add_washorder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_circle_black_24dp"
+        Application:elevation="4dp" />
 </LinearLayout>
