@@ -35,4 +35,11 @@
     <string name="button_add_clothes">Add new clothing</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="clothes_inventory">Clothes inventory</string>
+    <string name="washorders">Washorders</string>
+    <string name="settings">Settings</string>
+    <string name="changes_saved">Changes saved</string>
+    <string name="clothes_name">Clothes name</string>
+    <string name="rfid_settings">RFID Settings</string>
+    <string name="use_rfid">RFID-Tags are used on clothes</string>
 </resources>

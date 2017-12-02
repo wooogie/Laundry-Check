@@ -4,13 +4,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import ch.meienberger.android.laundrycheck.R;
-import ch.meienberger.android.laundrycheck.Washorder;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Washorder;
 
 /**
  * This adapter makes the onClick-listener on a RecyclerView possible

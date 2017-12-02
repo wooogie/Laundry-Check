@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+    <TextView
+        android:id="@+id/textbox_RFIDsettings_lable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:layout_weight="0.00"
+        android:editable="false"
+        android:text="@string/rfid_settings"
+        android:textSize="@dimen/text_font_size"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <CheckBox
+        android:id="@+id/checkbox_use_rfid"
+        style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:text="@string/use_rfid" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
+</LinearLayout>

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import ch.meienberger.android.laundrycheck.Washorder;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Washorder;
 
 
 public class WashorderDataSource {

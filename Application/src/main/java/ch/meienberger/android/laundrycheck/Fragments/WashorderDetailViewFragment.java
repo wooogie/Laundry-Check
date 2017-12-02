@@ -1,4 +1,4 @@
-package ch.meienberger.android.laundrycheck;
+package ch.meienberger.android.laundrycheck.Fragments;
 
 /**
  * Created by Silvan on 14.10.2017.
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import ch.meienberger.android.common.logger.Log;
+import ch.meienberger.android.laundrycheck.R;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Washorder;
 
 public class WashorderDetailViewFragment extends Fragment {
 

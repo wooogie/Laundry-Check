@@ -28,6 +28,14 @@
     tools:context=".MainActivity">
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_add_washorder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="-40dp"
+        android:src="@drawable/ic_add_black_24dp"
+        Application:elevation="4dp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -35,17 +43,11 @@
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/washorders_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="top"/>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/washorders_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/button_add_washorder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_circle_black_24dp"
-        Application:elevation="4dp" />
 </LinearLayout>

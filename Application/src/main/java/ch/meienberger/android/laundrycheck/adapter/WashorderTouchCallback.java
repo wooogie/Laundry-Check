@@ -1,4 +1,4 @@
-package ch.meienberger.android.laundrycheck;
+package ch.meienberger.android.laundrycheck.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -8,12 +8,12 @@ import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 /**
  * Created by studio1 on 10.06.2016.
  */
-public class CustomTouchCallback extends ItemTouchHelper.SimpleCallback {
+public class WashorderTouchCallback extends ItemTouchHelper.SimpleCallback {
 
 
     private WashorderAdapter mWashorderAdapter;
 
-    public CustomTouchCallback(WashorderAdapter adapter) {
+    public WashorderTouchCallback(WashorderAdapter adapter) {
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.START | ItemTouchHelper.END);
         mWashorderAdapter = adapter;
     }

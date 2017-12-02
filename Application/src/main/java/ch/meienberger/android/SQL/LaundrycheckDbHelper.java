@@ -33,7 +33,7 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CLOTHESTYPE = "CLOTHESTYPE";
 
 
-    public static final String SQL_CREATE =
+    public static final String SQL_CREATE_TABLE_WASHORDERS =
             "CREATE TABLE " + TABLE_WASH_ORDERS +
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_NAME + " TEXT NOT NULL, " +
@@ -42,7 +42,9 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
                     COLUMN_PICKUP_DATE + " TEXT NOT NULL, " +
                     COLUMN_PRICE + " INTEGER NOT NULL, " +
                     COLUMN_COMMENTS + " TEXT NOT NULL, " +
-                    COLUMN_CLOTHES_COUNT + " INTEGER NOT NULL);" +
+                    COLUMN_CLOTHES_COUNT + " INTEGER NOT NULL);";
+
+    public static final String SQL_CREATE_TABLE_CLOTHES =
             "CREATE TABLE " + TABLE_CLOTHES +
                     "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_NAME + " TEXT NOT NULL, " +
@@ -65,8 +67,11 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         try {
-            Log.d(LOG_TAG, "Table is going to be created by command: " + SQL_CREATE);
-            sqLiteDatabase.execSQL(SQL_CREATE);
+            Log.d(LOG_TAG, "Table is going to be created by command: " + SQL_CREATE_TABLE_WASHORDERS);
+            sqLiteDatabase.execSQL(SQL_CREATE_TABLE_WASHORDERS);
+
+            Log.d(LOG_TAG, "Table is going to be created by command: " + SQL_CREATE_TABLE_CLOTHES);
+            sqLiteDatabase.execSQL(SQL_CREATE_TABLE_CLOTHES);
         }
         catch (Exception ex) {
             Log.e(LOG_TAG, "Fault while creating table: " + ex.getMessage());

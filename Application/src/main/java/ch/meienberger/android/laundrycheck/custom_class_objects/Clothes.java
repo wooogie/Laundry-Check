@@ -1,4 +1,4 @@
-package ch.meienberger.android.laundrycheck;
+package ch.meienberger.android.laundrycheck.custom_class_objects;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -6,6 +6,9 @@ import java.util.Calendar;
 /**
  * This Class represents a clothes which can be washed.
  */
+
+
+
 
 public class Clothes {
 
@@ -17,16 +20,19 @@ public class Clothes {
     private int washcount = 0;
     private String last_washed = "";
     private int pieces = 0;
-    private String clothestype = "";
+    private int clothestype = 0;
 
     public Clothes(){
 
     }
 
+
+
     public long getId() {
         return id;
     }
 
+    public void setId(long id) { this.id = id; }
 
     public String getName() {
         return name;
@@ -56,6 +62,10 @@ public class Clothes {
         return washcount;
     }
 
+    public void setWashcount(int washcount) {
+        this.washcount = washcount;
+    }
+
     public void washed() {
         this.washcount = this.washcount++;
 
@@ -71,6 +81,10 @@ public class Clothes {
         return last_washed;
     }
 
+    public void setLast_washed(String last_washed) {
+        this.last_washed = last_washed;
+    }
+
     public int getPieces() {
         return pieces;
     }
@@ -79,11 +93,11 @@ public class Clothes {
         this.pieces = pieces;
     }
 
-    public String getClothestype() {
+    public int getClothestype() {
         return clothestype;
     }
 
-    public void setClothestype(String clothestype) {
+    public void setClothestype(int clothestype) {
         this.clothestype = clothestype;
     }
 }

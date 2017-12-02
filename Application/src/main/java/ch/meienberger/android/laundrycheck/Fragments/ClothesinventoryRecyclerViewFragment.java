@@ -14,9 +14,11 @@
 * limitations under the License.
 */
 
-package ch.meienberger.android.laundrycheck;
+package ch.meienberger.android.laundrycheck.Fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,16 +30,20 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
-import ch.meienberger.android.SQL.WashorderDataSource;
+import ch.meienberger.android.SQL.ClothesDataSource;
 import ch.meienberger.android.common.logger.Log;
-import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
+import ch.meienberger.android.laundrycheck.adapter.ClothesTouchCallback;
+import ch.meienberger.android.laundrycheck.adapter.WashorderTouchCallback;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
+import ch.meienberger.android.laundrycheck.R;
+import ch.meienberger.android.laundrycheck.adapter.ClothesAdapter;
 
 
 public class ClothesinventoryRecyclerViewFragment extends Fragment {
 
     private static final String TAG = "ClothesinventoryRecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private WashorderDataSource dataSource;
+    private ClothesDataSource dataSource;
 
 
     public ClothesinventoryRecyclerViewFragment() {
@@ -51,14 +57,14 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
 
     protected LayoutManagerType mCurrentLayoutManagerType;
 
-    protected Button mButtonAddItem;
+    protected FloatingActionButton mButtonAddItem;
     protected Button mClickedItem;
     protected Button mButtonRemoveItem;
 
     protected RecyclerView mRecyclerView;
-    protected WashorderAdapter mAdapter;
+    protected ClothesAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected ArrayList<Washorder> mDataset;
+    protected ArrayList<Clothes> mDataset;
 
 
     @Override
@@ -74,7 +80,7 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
         rootView.setTag(TAG);
 
         // BEGIN_INCLUDE(initializeRecyclerView)
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.washorders_recyclerView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.clothes_recyclerView);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -92,22 +98,22 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
 
         //get already stored data to the adapter
         //init SQL
-        dataSource = new WashorderDataSource(this.getContext());
+        dataSource = new ClothesDataSource(this.getContext());
         dataSource.open();
-        mDataset = (ArrayList<Washorder>)dataSource.getAllWashorders();
+        mDataset = (ArrayList<Clothes>)dataSource.getAllClothes();
         dataSource.close();
 
-        mAdapter = new WashorderAdapter(mDataset, dataSource, this);
-        // Set custom Washorderadapter as the adapter for RecyclerView.
+        mAdapter = new ClothesAdapter(mDataset, dataSource, this);
+        // Set custom Clothesadapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.Callback callback = new CustomTouchCallback(mAdapter);
+        ItemTouchHelper.Callback callback = new ClothesTouchCallback(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecyclerView);
 
         // END_INCLUDE(initializeRecyclerView)
 
-        mButtonAddItem = (Button) rootView.findViewById(R.id.button_add_washorder);
+        mButtonAddItem = (FloatingActionButton) rootView.findViewById(R.id.button_add_clothes);
         mButtonAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,9 +126,6 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
         return rootView;
     }
 
-    public void callWashorderDetailFragment(){
-
-    }
 
     /**
      * Set RecyclerView's LayoutManager to the one given.
@@ -160,19 +163,13 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
     }
 
     /**
-     * Calls Detail Fragment with the right Id
-     */
-    public void callWashorderDetailFragment(long cur_WashorderId){
-        return;
-    }
-
-
-    /**
      * Lifecycle methods
      */
     @Override
     public void onResume() {
         super.onResume();
+        Activity curActivity =  ((Activity) getContext());
+        curActivity.setTitle(R.string.action_clothes);
 
      Log.d(TAG, "method onResume is called. DB is getting opened");
      dataSource.open();

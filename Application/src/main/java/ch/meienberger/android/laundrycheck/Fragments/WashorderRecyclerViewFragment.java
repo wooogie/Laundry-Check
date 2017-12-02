@@ -14,10 +14,11 @@
 * limitations under the License.
 */
 
-package ch.meienberger.android.laundrycheck;
+package ch.meienberger.android.laundrycheck.Fragments;
 
 import ch.meienberger.android.SQL.WashorderDataSource;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,9 @@ import ch.meienberger.android.common.logger.Log;
 
 import java.util.ArrayList;
 
+import ch.meienberger.android.laundrycheck.adapter.WashorderTouchCallback;
+import ch.meienberger.android.laundrycheck.R;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Washorder;
 import ch.meienberger.android.laundrycheck.adapter.WashorderAdapter;
 
 
@@ -74,6 +78,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.washorder_recycler_view_frag, container, false);
         rootView.setTag(TAG);
 
@@ -105,7 +110,7 @@ public class WashorderRecyclerViewFragment extends Fragment {
         // Set custom Washorderadapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.Callback callback = new CustomTouchCallback(mAdapter);
+        ItemTouchHelper.Callback callback = new WashorderTouchCallback(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecyclerView);
 
@@ -176,6 +181,8 @@ public class WashorderRecyclerViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Activity curActivity =  ((Activity) getContext());
+        curActivity.setTitle(R.string.action_washorder);
 
      Log.d(TAG, "method onResume is called. DB is getting opened");
      dataSource.open();

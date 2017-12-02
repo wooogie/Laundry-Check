@@ -1,6 +1,4 @@
-package ch.meienberger.android.laundrycheck;
-
-import java.util.UUID;
+package ch.meienberger.android.laundrycheck.custom_class_objects;
 
 /**
  * This Class represents a washorder on a laundry with all the data which are important related to it.

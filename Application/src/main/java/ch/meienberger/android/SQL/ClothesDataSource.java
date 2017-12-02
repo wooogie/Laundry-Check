@@ -7,13 +7,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import ch.meienberger.android.laundrycheck.Clothes;
-import ch.meienberger.android.laundrycheck.Washorder;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 
 
 public class ClothesDataSource {
@@ -59,145 +56,146 @@ public class ClothesDataSource {
     }
 
 
-//    /*
-//    Insert a new Washorder into the DB and return the insered as Washorder
-//     */
-//    public Clothes createClothes(String name) {
-//
-//        ContentValues values = new ContentValues();
-//        values.put(LaundrycheckDbHelper.COLUMN_NAME, name);
-//        values.put(LaundrycheckDbHelper.COLUMN_RFID_ID, "");
-//        values.put(LaundrycheckDbHelper.COLUMN_PICTURE, "");
-//        values.put(LaundrycheckDbHelper.COLUMN_PICKUP_DATE, "");
-//        values.put(LaundrycheckDbHelper.COLUMN_CLOTHES_COUNT, 0);
-//        values.put(LaundrycheckDbHelper.COLUMN_PRICE, 0);
-//        values.put(LaundrycheckDbHelper.COLUMN_COMMENTS, "");
-//
-//
-//        long insertId = database.insert(LaundrycheckDbHelper.TABLE_WASH_ORDERS, null, values);
-//
-//        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-//                washorder_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + insertId,
-//                null, null, null, null);
-//
-//        cursor.moveToFirst();
-//        Washorder washorder = cursorToWashorder(cursor);
-//        cursor.close();
-//
-//        return washorder;
-//    }
-//
-//    /*
-//     * Get the washorder by Id
-//     */
-//    public Washorder getWashorder(long Id) {
-//
-//        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-//                washorder_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + Id,
-//                null, null, null, null);
-//
-//        cursor.moveToFirst();
-//        Washorder washorder = cursorToWashorder(cursor);
-//        cursor.close();
-//
-//        return washorder;
-//    }
-//
-//
-//    private Washorder cursorToWashorder(Cursor cursor) {
-//        int idIndex = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_ID);
-//        int idName = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_NAME);
-//        int idAddress = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_ADDRESS);
-//        int idDeliveryDate = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_DELIVERY_DATE);
-//        int idPickupDate = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_PICKUP_DATE);
-//        int idClothesCount = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_CLOTHES_COUNT);
-//        int idPrice = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_PRICE);
-//        int idComments = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_COMMENTS);
-//
-//        String name = cursor.getString(idName);
-//        String address = cursor.getString(idAddress);
-//        String deliverydate = cursor.getString(idDeliveryDate);
-//        String pickupdate = cursor.getString(idPickupDate);
-//        String comments = cursor.getString(idComments);
-//        int clothescount = cursor.getInt(idClothesCount);
-//        int price = cursor.getInt(idPrice);
-//        long id = cursor.getLong(idIndex);
-//
-//        Washorder washorder = new Washorder();
-//        washorder.setId(id);
-//        washorder.setAddress(address);
-//        washorder.setDelivery_date(deliverydate);
-//        washorder.setPickup_date(pickupdate);
-//        washorder.setClothes_count(clothescount);
-//        washorder.setComments(comments);
-//        washorder.setName(name);
-//        washorder.setPrice(price);
-//
-//        return washorder;
-//    }
-//
-//
-//    public List<Washorder> getAllWashorders() {
-//        List<Washorder> washorderslist = new ArrayList<>();
-//
-//        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-//                washorder_columns, null, null, null, null, LaundrycheckDbHelper.COLUMN_ID +" DESC");
-//
-//        cursor.moveToFirst();
-//        Washorder washorder;
-//
-//        while(!cursor.isAfterLast()) {
-//            washorder = cursorToWashorder(cursor);
-//            washorderslist.add(washorder);
-//            Log.d(LOG_TAG, "ID: " + washorder.getId() + ", Inhalt: " + washorder.toString());
-//            cursor.moveToNext();
-//        }
-//
-//        cursor.close();
-//
-//        return washorderslist;
-//    }
-//
-//    /*
-//     * Deletes the specific washorder form the DB
-//     */
-//    public void deleteWashorder(Washorder curWashorder){
-//        long id = curWashorder.getId();
-//
-//        database.delete(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-//                LaundrycheckDbHelper.COLUMN_ID + "=" + id,
-//                null);
-//
-//        Log.d(LOG_TAG, "Washorder deletet! ID: " + id);
-//
-//    }
-//
-//    /*
-//     * Update an existing Washorder in the DB
-//     */
-//    public Washorder updateWashorder(Washorder changedWashorder) {
-//        ContentValues values = new ContentValues();
-//        values.put(LaundrycheckDbHelper.COLUMN_NAME, changedWashorder.getName());
-//        values.put(LaundrycheckDbHelper.COLUMN_ADDRESS, changedWashorder.getAddress());
-//        values.put(LaundrycheckDbHelper.COLUMN_DELIVERY_DATE, changedWashorder.getDelivery_date());
-//        values.put(LaundrycheckDbHelper.COLUMN_PICKUP_DATE, changedWashorder.getPickup_date());
-//        values.put(LaundrycheckDbHelper.COLUMN_PRICE, changedWashorder.getPrice());
-//        values.put(LaundrycheckDbHelper.COLUMN_COMMENTS, changedWashorder.getComments());
-//
-//        database.update(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-//                values,
-//                LaundrycheckDbHelper.COLUMN_ID + "=" + changedWashorder.getId(),
-//                null);
-//
-//        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_WASH_ORDERS,
-//                washorder_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + changedWashorder.getId(),
-//                null, null, null, null);
-//
-//        cursor.moveToFirst();
-//        Washorder washorder = cursorToWashorder(cursor);
-//        cursor.close();
-//
-//        return washorder;
-//    }
-//
+    /*
+    Insert a new Clothes into the DB and return the insered as Clothes object.
+     */
+    public Clothes createClothes(String name) {
+
+        ContentValues values = new ContentValues();
+        values.put(LaundrycheckDbHelper.COLUMN_NAME, name);
+        values.put(LaundrycheckDbHelper.COLUMN_RFID_ID, "");
+        values.put(LaundrycheckDbHelper.COLUMN_PICTURE, "");
+        values.put(LaundrycheckDbHelper.COLUMN_WASHCOUNT, 0);
+        values.put(LaundrycheckDbHelper.COLUMN_LAST_WASHED, "");
+        values.put(LaundrycheckDbHelper.COLUMN_PIECES, 0);
+        values.put(LaundrycheckDbHelper.COLUMN_CLOTHESTYPE, 0);
+
+
+        long insertId = database.insert(LaundrycheckDbHelper.TABLE_CLOTHES, null, values);
+
+        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_CLOTHES,
+                clothes_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + insertId,
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        Clothes clothes = cursorToClothes(cursor);
+        cursor.close();
+
+        return clothes;
+    }
+
+    /*
+     * Get the washorder by Id
+     */
+    public Clothes getClothes(long Id) {
+
+        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_CLOTHES,
+                clothes_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + Id,
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        Clothes clothes = cursorToClothes(cursor);
+        cursor.close();
+
+        return clothes;
+    }
+
+
+    private Clothes cursorToClothes(Cursor cursor) {
+        int idIndex = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_ID);
+        int idName = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_NAME);
+        int idRfidId = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_RFID_ID);
+        int idPicture = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_PICTURE);
+        int idWashcount = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_WASHCOUNT);
+        int idLastWashed = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_LAST_WASHED);
+        int idPieces = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_PIECES);
+        int idClothestype = cursor.getColumnIndex(LaundrycheckDbHelper.COLUMN_CLOTHESTYPE);
+
+        long id = cursor.getLong(idIndex);
+        String name = cursor.getString(idName);
+        String rfid_id = cursor.getString(idRfidId);
+        String picture = cursor.getString(idPicture);
+        int washcount = cursor.getInt(idWashcount);
+        String lastwashed = cursor.getString(idLastWashed);
+        int pieces = cursor.getInt(idPieces);
+        int clothestype = cursor.getInt(idClothestype);
+
+        Clothes clothes = new Clothes();
+        clothes.setId(id);
+        clothes.setName(name);
+        clothes.setRfid_id(rfid_id);
+        clothes.setPicture(picture);
+        clothes.setWashcount(washcount);
+        clothes.setLast_washed(lastwashed);
+        clothes.setPieces(pieces);
+        clothes.setClothestype(clothestype);
+
+        return clothes;
+    }
+
+
+    public List<Clothes> getAllClothes() {
+        List<Clothes> clotheslist = new ArrayList<>();
+
+        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_CLOTHES,
+                clothes_columns, null, null, null, null, LaundrycheckDbHelper.COLUMN_ID +" DESC");
+
+        cursor.moveToFirst();
+        Clothes clothes;
+
+        while(!cursor.isAfterLast()) {
+            clothes = cursorToClothes(cursor);
+            clotheslist.add(clothes);
+            Log.d(LOG_TAG, "ID: " + clothes.getId() + ", Inhalt: " + clothes.toString());
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return clotheslist;
+    }
+
+    /*
+     * Deletes the specific washorder form the DB
+     */
+    public void deleteClothes(Clothes curClothes){
+        long id = curClothes.getId();
+
+        database.delete(LaundrycheckDbHelper.TABLE_CLOTHES,
+                LaundrycheckDbHelper.COLUMN_ID + "=" + id,
+                null);
+
+        Log.d(LOG_TAG, "Clothes deletet! ID: " + id);
+
+    }
+
+    /*
+     * Update an existing Clothes in the DB
+     */
+    public Clothes updateClothes(Clothes changedClothes) {
+        ContentValues values = new ContentValues();
+        values.put(LaundrycheckDbHelper.COLUMN_NAME, changedClothes.getName());
+        values.put(LaundrycheckDbHelper.COLUMN_RFID_ID, changedClothes.getRfid_id());
+        values.put(LaundrycheckDbHelper.COLUMN_PICTURE, changedClothes.getPicture());
+        values.put(LaundrycheckDbHelper.COLUMN_WASHCOUNT, changedClothes.getWashcount());
+        values.put(LaundrycheckDbHelper.COLUMN_LAST_WASHED, changedClothes.getLast_washed());
+        values.put(LaundrycheckDbHelper.COLUMN_PIECES, changedClothes.getPieces());
+        values.put(LaundrycheckDbHelper.COLUMN_CLOTHESTYPE, changedClothes.getClothestype());
+
+        database.update(LaundrycheckDbHelper.TABLE_CLOTHES,
+                values,
+                LaundrycheckDbHelper.COLUMN_ID + "=" + changedClothes.getId(),
+                null);
+
+        Cursor cursor = database.query(LaundrycheckDbHelper.TABLE_CLOTHES,
+                clothes_columns, LaundrycheckDbHelper.COLUMN_ID + "=" + changedClothes.getId(),
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        Clothes clothes = cursorToClothes(cursor);
+        cursor.close();
+
+        return clothes;
+    }
+
 }

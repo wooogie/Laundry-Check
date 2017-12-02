@@ -16,9 +16,6 @@
 
 package ch.meienberger.android.laundrycheck.adapter;
 
-import ch.meienberger.android.SQL.WashorderDataSource;
-import ch.meienberger.android.common.logger.Log;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -26,26 +23,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
+import ch.meienberger.android.SQL.ClothesDataSource;
+
+import ch.meienberger.android.common.logger.Log;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
+import ch.meienberger.android.laundrycheck.Fragments.ClothesDetailViewFragment;
+import ch.meienberger.android.laundrycheck.Fragments.ClothesinventoryRecyclerViewFragment;
 import ch.meienberger.android.laundrycheck.R;
-
-import java.util.ArrayList;
-
-import ch.meienberger.android.laundrycheck.Fragments.WashorderDetailViewFragment;
-import ch.meienberger.android.laundrycheck.custom_class_objects.Washorder;
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
  */
-public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.ViewHolder>  {
-    private static final String TAG = "WashorderAdapter";
-    private static WashorderDataSource mdataSource;
-    private ArrayList<Washorder> mDataSet;
+public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHolder>  {
+    private static final String TAG = "ClothesAdapter";
+    private static ClothesDataSource mdataSource;
+    private ArrayList<Clothes> mDataSet;
     private static Fragment mparentFragment;
 
-    // BEGIN_INCLUDE(recyclerViewSampleViewHolder)
+    // BEGIN_INCLUDE
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
@@ -59,12 +59,12 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Washorder with Id: " + getId().getText() + " clicked.");
+                    Log.d(TAG, "Clothes with Id: " + getId().getText() + " clicked.");
 
-                    // Create new fragment with the WashorderID as arg and a new transaction
-                    Fragment DetailFragment = new WashorderDetailViewFragment();
+                    // Create new fragment with the ClothesId as arg and a new transaction
+                    Fragment DetailFragment = new ClothesDetailViewFragment();
                     Bundle args = new Bundle();
-                    args.putLong(WashorderDetailViewFragment.ARG_WASHORDERID, Long.parseLong(getId().getText().toString()));
+                    args.putLong(ClothesDetailViewFragment.ARG_CLOTHESID, Long.parseLong(getId().getText().toString()));
                     DetailFragment.setArguments(args);
 
                     android.support.v4.app.FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();
@@ -81,8 +81,8 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
             });
 
             //link view holder to xml layout
-            name = (TextView) v.findViewById(R.id.washorderRowName);
-            id = (TextView) v.findViewById(R.id.washorder_row_id);
+            name = (TextView) v.findViewById(R.id.clothes_row_name);
+            id = (TextView) v.findViewById(R.id.clothes_row_id);
         }
 
         public TextView getName() {
@@ -92,15 +92,14 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
             return id;
         }
     }
-    // END_INCLUDE(recyclerViewSampleViewHolder)
+    // END_INCLUDE
 
     /**
      * Initialize the dataset of the Adapter.
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public WashorderAdapter(ArrayList<Washorder> dataSet, WashorderDataSource dataSource, Fragment parentFragment) {
-        //dataSource = new WashorderDataSource(this.);
+    public ClothesAdapter(ArrayList<Clothes> dataSet, ClothesDataSource dataSource, Fragment parentFragment) {
         mDataSet = dataSet;
         mdataSource = dataSource;
         mparentFragment = parentFragment;
@@ -112,7 +111,7 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.washorder_row_item, viewGroup, false);
+                .inflate(R.layout.clothes_row_item, viewGroup, false);
 
         return new ViewHolder(v);
     }
@@ -122,11 +121,10 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Log.d(TAG, "Element " + position + " set.");
+        Log.d(TAG, "Clothes " + position + " set.");
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
-        //viewHolder.getTextView().setText(mDataSet.get(position));
         viewHolder.getName().setText(mDataSet.get(position).getName());
 
         String tmp_string = Long.toString(mDataSet.get(position).getId());
@@ -148,15 +146,14 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
         String formattedDate = df.format(c.getTime());
 
 
-        //generate new washorder
+        //generate new clothes
         mdataSource.open();
-        mdataSource.createWashorder(formattedDate);
-        mDataSet = (ArrayList<Washorder>)mdataSource.getAllWashorders();
+        mdataSource.createClothes(formattedDate);
+        mDataSet = (ArrayList<Clothes>)mdataSource.getAllClothes();
         mdataSource.close();
 
-        notifyItemRangeInserted(0,1);
+        notifyItemInserted(0);
         notifyItemChanged(0);
-        //notifyItemInserted(0);
     }
 
     public void removeItem() {
@@ -166,19 +163,16 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
 
     public void removeItemAt(int position) {
 
+        //// TODO: 30.11.2017 doublecheck
         //delete from DB
         mdataSource.open();
-        mdataSource.deleteWashorder(mDataSet.get(position));
+        mdataSource.deleteClothes(mDataSet.get(position));
         mdataSource.close();
 
         //remove from Dataset
         mDataSet.remove(position);
         notifyItemRemoved(position);
 
-
     }
-
-
-
 
 }
