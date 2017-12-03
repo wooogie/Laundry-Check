@@ -6,32 +6,49 @@ package ch.meienberger.android.laundrycheck.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import ch.meienberger.android.SQL.ClothesDataSource;
 import ch.meienberger.android.common.logger.Log;
 import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 import ch.meienberger.android.laundrycheck.R;
 
+import static android.app.Activity.RESULT_OK;
 import static ch.meienberger.android.laundrycheck.Fragments.SettingsViewFragment.PREF_USE_RFID;
 
 public class ClothesDetailViewFragment extends Fragment {
 
     public static final String ARG_CLOTHESID = "arg_clothesid";
     private static final String TAG = "ClothesDetailViewFragment";
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_TAKE_PHOTO = 2;
 
     private long mClothesid;
     private ClothesDataSource dataSource;
 
-
+    protected ImageView mImageViewPreview;
     protected EditText mEditTextName;
     protected EditText mEditTextRfidId;
     protected TextView mTextViewRfidIdLable;
@@ -72,6 +89,7 @@ public class ClothesDetailViewFragment extends Fragment {
 
 
         // BEGIN_INCLUDE
+        mImageViewPreview = (ImageView) rootView.findViewById(R.id.clothesdetail_preview_imageView);
         mEditTextName = (EditText) rootView.findViewById(R.id.clothesdetail_name_editText);
         mTextViewRfidIdLable = (TextView) rootView.findViewById(R.id.rfid_id_lable);
         mEditTextRfidId = (EditText) rootView.findViewById(R.id.clothesdetail_rfid_id_editText);
@@ -82,6 +100,7 @@ public class ClothesDetailViewFragment extends Fragment {
         mEditTextClothestype = (EditText) rootView.findViewById(R.id.clothesdetail_clothestype_editText);
         // END_INCLUDE(
 
+
         //Fill Fields
         mEditTextName.setText(mClothes.getName());
         mEditTextRfidId.setText(mClothes.getRfid_id());
@@ -89,6 +108,16 @@ public class ClothesDetailViewFragment extends Fragment {
         mEditTextWashcount.setText(String.valueOf(mClothes.getWashcount()));
         mEditTextPieces.setText(String.valueOf(mClothes.getPieces()));
         mEditTextClothestype.setText(String.valueOf(mClothes.getClothestype()));
+
+        //Listener
+        mImageViewPreview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
+
+
 
         return rootView;
     }
@@ -138,6 +167,81 @@ public class ClothesDetailViewFragment extends Fragment {
         //notify user
         Snackbar.make(getView(), R.string.changes_saved, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(((Activity) getContext()).getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                //// TODO: 02.12.2017
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile((Activity) getContext(),
+                        "ch.meienberger.android.laundrycheck",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = ((Activity) getContext()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mClothes.setPicture("file:" + image.getAbsolutePath());
+        return image;
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = mImageViewPreview.getWidth();
+        int targetH = mImageViewPreview.getHeight();
+        String PhotoPath = mClothes.getPicture();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.max(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
+        mImageViewPreview.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mImageViewPreview.setImageBitmap(imageBitmap);
+        }
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            setPic();
+        }
     }
 
 
