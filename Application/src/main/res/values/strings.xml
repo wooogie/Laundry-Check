@@ -42,4 +42,9 @@
     <string name="clothes_name">Clothes name</string>
     <string name="rfid_settings">RFID Settings</string>
     <string name="use_rfid">RFID-Tags are used on clothes</string>
+    <string name="rfid_id">RFID-Tagnumber</string>
+    <string name="washcount">Washcounts</string>
+    <string name="lastwashed">Last time washed</string>
+    <string name="pieces">Number of pieces</string>
+    <string name="clothestype">Type of clothes</string>
 </resources>

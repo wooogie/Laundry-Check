@@ -7,6 +7,7 @@ package ch.meienberger.android.laundrycheck.Fragments;
 import ch.meienberger.android.SQL.WashorderDataSource;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,6 +117,10 @@ public class WashorderDetailViewFragment extends Fragment {
         mWashorder.setComments(mEditTextComment.getText().toString());
         dataSource.updateWashorder(mWashorder);
         dataSource.close();
+
+        //notify user
+        Snackbar.make(getView(), R.string.changes_saved, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
 
