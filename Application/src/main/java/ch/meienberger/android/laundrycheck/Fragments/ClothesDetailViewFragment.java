@@ -109,6 +109,7 @@ public class ClothesDetailViewFragment extends Fragment {
         mEditTextPieces.setText(String.valueOf(mClothes.getPieces()));
         mEditTextClothestype.setText(String.valueOf(mClothes.getClothestype()));
 
+
         //Listener
         mImageViewPreview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +146,12 @@ public class ClothesDetailViewFragment extends Fragment {
             mEditTextRfidId.setVisibility(View.GONE);
             mTextViewRfidIdLable.setVisibility(View.GONE);
             mSpaceRfidId.setVisibility(View.GONE);
+        }
+
+        //set picture
+        if (!mClothes.getPicture().equalsIgnoreCase("")){
+            Bitmap bitmap = BitmapFactory.decodeFile(mClothes.getPicture().replace("file:",""));
+            mImageViewPreview.setImageBitmap(bitmap);
         }
 
         Log.d(TAG, "method onResume is called. DB is getting opened");
@@ -222,7 +229,7 @@ public class ClothesDetailViewFragment extends Fragment {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.max(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
