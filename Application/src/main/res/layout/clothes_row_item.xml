@@ -17,30 +17,48 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
     android:layout_marginLeft="@dimen/margin_medium"
     android:layout_marginRight="@dimen/margin_medium"
     android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:weightSum="1">
 
-    <TextView
-        android:id="@+id/clothes_row_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/element_text" />
-
-    <TextView
-        android:id="@+id/clothes_row_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test" />
-
-    <ImageView
-        android:id="@+id/clothesrowitem_preview_imageView"
-        android:layout_width="@dimen/image_preview_with"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        app:srcCompat="@mipmap/ic_image" />
+        android:layout_marginTop="@dimen/recycler_horizontal_margin">
+
+        <TextView
+            android:id="@+id/clothes_row_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="left"
+            android:text="@string/element_text" />
+
+        <TextView
+            android:id="@+id/clothes_row_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/clothes_row_name"
+            android:layout_gravity="left"
+            android:text="test" />
+
+        <ImageView
+            android:id="@+id/clothesrowitem_preview_imageView"
+            android:layout_width="@dimen/image_preview_with"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="end"
+            app:srcCompat="@mipmap/ic_image" />
+    </RelativeLayout>
 
 </LinearLayout>

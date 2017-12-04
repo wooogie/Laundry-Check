@@ -16,12 +16,15 @@
 
 package ch.meienberger.android.laundrycheck.adapter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +55,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private final TextView id;
+        private final ImageView preview_image;
 
         public ViewHolder(View v) {
             super(v);
@@ -83,6 +87,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             //link view holder to xml layout
             name = (TextView) v.findViewById(R.id.clothes_row_name);
             id = (TextView) v.findViewById(R.id.clothes_row_id);
+            preview_image = (ImageView) v.findViewById(R.id.clothesrowitem_preview_imageView);
         }
 
         public TextView getName() {
@@ -91,8 +96,8 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         public TextView getId() {
             return id;
         }
+        public ImageView getPreview_image() {return preview_image; }
     }
-    // END_INCLUDE
 
     /**
      * Initialize the dataset of the Adapter.
@@ -129,6 +134,9 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
 
         String tmp_string = Long.toString(mDataSet.get(position).getId());
         viewHolder.getId().setText(tmp_string);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mDataSet.get(position).getPicture().replace("file:",""));
+        viewHolder.getPreview_image().setImageBitmap(bitmap);
     }
     // END_INCLUDE(recyclerViewOnBindViewHolder)
 
@@ -173,6 +181,30 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         mDataSet.remove(position);
         notifyItemRemoved(position);
 
+    }
+
+    private void setPreviewPicture(ViewHolder viewHolder,final int position) {
+        // Get the dimensions of the View
+        int targetW = viewHolder.getPreview_image().getWidth();
+        int targetH = viewHolder.getPreview_image().getHeight();
+        String PhotoPath = mDataSet.get(position).getPicture();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
+        viewHolder.getPreview_image().setImageBitmap(bitmap);
     }
 
 }
