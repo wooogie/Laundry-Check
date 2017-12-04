@@ -20,7 +20,42 @@ public class Clothes {
     private int washcount = 0;
     private String last_washed = "";
     private int pieces = 0;
-    private int clothestype = 0;
+    private Clothestype clothestype = Clothestype.Others;
+
+    public enum Clothestype{
+        Others(0),
+        Pullover(1),
+        Socks(2),
+        Pants(3),
+        Underwear(4),
+        TShirt(5),
+        Skirt(6),
+        Dress(7);
+
+        public final int value;
+
+        Clothestype(final int value) {
+            this.value = value;
+        }
+
+         public Clothestype getValue(int value){
+            for(Clothestype e: Clothestype.values()){
+                if(e.value == value){
+                    return e;
+                }
+            }
+            return Clothestype.Others; //clothestype not found
+        }
+
+         Clothestype getFromName(String value){
+            for(Clothestype e: Clothestype.values()){
+                if(e.name().equalsIgnoreCase(value)){
+                    return e;
+                }
+            }
+            return Clothestype.Others; //clothestype not found
+        }
+    }
 
     public Clothes(){
 
@@ -93,11 +128,11 @@ public class Clothes {
         this.pieces = pieces;
     }
 
-    public int getClothestype() {
+    public Clothestype getClothestype() {
         return clothestype;
     }
 
-    public void setClothestype(int clothestype) {
+    public void setClothestype(Clothestype clothestype) {
         this.clothestype = clothestype;
     }
 }

@@ -81,7 +81,7 @@ public class ClothesDetailViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.clothes_detail_view, container, false);
+        View rootView = inflater.inflate(R.layout.clothes_detail_scrollcontainer, container, false);
         rootView.setTag(TAG);
 
         Log.d(TAG, "Washorder with Id: " + mClothes.getId() + " is displaying.");
@@ -107,7 +107,7 @@ public class ClothesDetailViewFragment extends Fragment {
         mEditTextLastwashed.setText(mClothes.getLast_washed());
         mEditTextWashcount.setText(String.valueOf(mClothes.getWashcount()));
         mEditTextPieces.setText(String.valueOf(mClothes.getPieces()));
-        mEditTextClothestype.setText(String.valueOf(mClothes.getClothestype()));
+        mEditTextClothestype.setText(mClothes.getClothestype().name());
 
 
         //Listener
@@ -166,7 +166,7 @@ public class ClothesDetailViewFragment extends Fragment {
         mClothes.setName(mEditTextName.getText().toString());
         mClothes.setRfid_id(mEditTextRfidId.getText().toString());
         mClothes.setPieces(Integer.parseInt(mEditTextPieces.getText().toString()));
-        mClothes.setClothestype(Integer.parseInt(mEditTextClothestype.getText().toString()));
+        mClothes.setClothestype(Clothes.Clothestype.valueOf(mEditTextClothestype.getText().toString()));
 
         dataSource.updateClothes(mClothes);
         dataSource.close();

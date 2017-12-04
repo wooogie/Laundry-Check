@@ -118,7 +118,7 @@ public class ClothesDataSource {
         int washcount = cursor.getInt(idWashcount);
         String lastwashed = cursor.getString(idLastWashed);
         int pieces = cursor.getInt(idPieces);
-        int clothestype = cursor.getInt(idClothestype);
+        int int_clothestype = cursor.getInt(idClothestype);
 
         Clothes clothes = new Clothes();
         clothes.setId(id);
@@ -128,7 +128,9 @@ public class ClothesDataSource {
         clothes.setWashcount(washcount);
         clothes.setLast_washed(lastwashed);
         clothes.setPieces(pieces);
-        clothes.setClothestype(clothestype);
+
+        Clothes.Clothestype c = Clothes.Clothestype.Others.getValue(int_clothestype);
+        clothes.setClothestype(c);
 
         return clothes;
     }
@@ -180,7 +182,7 @@ public class ClothesDataSource {
         values.put(LaundrycheckDbHelper.COLUMN_WASHCOUNT, changedClothes.getWashcount());
         values.put(LaundrycheckDbHelper.COLUMN_LAST_WASHED, changedClothes.getLast_washed());
         values.put(LaundrycheckDbHelper.COLUMN_PIECES, changedClothes.getPieces());
-        values.put(LaundrycheckDbHelper.COLUMN_CLOTHESTYPE, changedClothes.getClothestype());
+        values.put(LaundrycheckDbHelper.COLUMN_CLOTHESTYPE, changedClothes.getClothestype().value);
 
         database.update(LaundrycheckDbHelper.TABLE_CLOTHES,
                 values,

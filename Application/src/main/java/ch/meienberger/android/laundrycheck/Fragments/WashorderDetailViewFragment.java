@@ -56,7 +56,7 @@ public class WashorderDetailViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.washorder_detail_view, container, false);
+        View rootView = inflater.inflate(R.layout.washorder_detail_scrollcontainer, container, false);
         rootView.setTag(TAG);
 
         Log.d(TAG, "Washorder with Id: " + mWashorder.getId() + " is displaying.");

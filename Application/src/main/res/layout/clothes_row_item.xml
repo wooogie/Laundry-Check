@@ -36,4 +36,11 @@
         android:layout_height="wrap_content"
         android:text="test" />
 
+    <ImageView
+        android:id="@+id/clothesrowitem_preview_imageView"
+        android:layout_width="@dimen/image_preview_with"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        app:srcCompat="@mipmap/ic_image" />
+
 </LinearLayout>
