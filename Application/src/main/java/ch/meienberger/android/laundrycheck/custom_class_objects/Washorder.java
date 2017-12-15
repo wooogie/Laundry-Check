@@ -4,7 +4,7 @@ package ch.meienberger.android.laundrycheck.custom_class_objects;
  * This Class represents a washorder on a laundry with all the data which are important related to it.
  */
 
-public class Washorder {
+public class Washorder implements Cloneable{
 
 
     private long id = 0;
@@ -82,4 +82,39 @@ public class Washorder {
         this.price = price;
     }
 
+    public boolean checkChanges(Washorder otherWashorder){
+
+        if (!this.getName().contentEquals(otherWashorder.getName())){
+            return true;
+        }
+        if (!this.getAddress().contentEquals(otherWashorder.getAddress())){
+            return true;
+        }
+        if (!this.getDelivery_date().contentEquals(otherWashorder.getDelivery_date())){
+            return true;
+        }
+        if (!this.getPickup_date().contentEquals(otherWashorder.getPickup_date())){
+            return true;
+        }
+        if (!this.getComments().contentEquals(otherWashorder.getComments())){
+            return true;
+        }
+        if (this.getClothes_count()!=otherWashorder.getClothes_count()){
+            return true;
+        }
+        if (this.getPrice()!=otherWashorder.getPrice()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Washorder clone(){
+        try {
+            return (Washorder) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

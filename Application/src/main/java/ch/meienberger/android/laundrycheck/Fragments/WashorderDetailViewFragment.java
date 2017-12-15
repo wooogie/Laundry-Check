@@ -37,6 +37,7 @@ public class WashorderDetailViewFragment extends Fragment {
     protected EditText mEditTextComment;
     protected Button mButtonAddedClothes;
     protected Washorder mWashorder;
+    protected Washorder mWashorderBackup;
 
 
     @Override
@@ -136,7 +137,9 @@ public class WashorderDetailViewFragment extends Fragment {
         super.onResume();
 
         Log.d(TAG, "method onResume is called. DB is getting opened");
-        dataSource.open();
+
+        //get backup from Washorder
+        mWashorderBackup = mWashorder.clone();
     }
 
     @Override
@@ -150,12 +153,16 @@ public class WashorderDetailViewFragment extends Fragment {
         mWashorder.setPickup_date(mEditTextPickupDate.getText().toString());
         mWashorder.setPrice(Integer.parseInt(mEditTextPrice.getText().toString()));
         mWashorder.setComments(mEditTextComment.getText().toString());
-        dataSource.updateWashorder(mWashorder);
-        dataSource.close();
 
-        //notify user
-        Snackbar.make(getView(), R.string.changes_saved, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        if (mWashorder.checkChanges(mWashorderBackup)) {
+            dataSource.open();
+            dataSource.updateWashorder(mWashorder);
+            dataSource.close();
+
+            //notify user
+            Snackbar.make(getView(), R.string.changes_saved, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 
 

@@ -66,10 +66,6 @@ public class Mapping {
             return true;
         }
 
-        if (mapping1.getId()!=mapping2.getId()){
-            return true;
-        }
-
         return false;
     }
 }
