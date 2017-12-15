@@ -42,5 +42,7 @@
     <dimen name="preview_image_height">200dp</dimen>
     <dimen name="image_preview_with">100dp</dimen>
     <dimen name="recycler_horizontal_margin">4dp</dimen>
+    <dimen name="column_rightdistance">100dp</dimen>
+    <dimen name="floatingpoint_height">40dp</dimen>
 
 </resources>

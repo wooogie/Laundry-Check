@@ -6,15 +6,18 @@ package ch.meienberger.android.laundrycheck.Fragments;
 
 import ch.meienberger.android.SQL.WashorderDataSource;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import ch.meienberger.android.common.logger.Log;
 import ch.meienberger.android.laundrycheck.R;
+import ch.meienberger.android.laundrycheck.adapter.SelectMappingClothesAdapter;
 import ch.meienberger.android.laundrycheck.custom_class_objects.Washorder;
 
 public class WashorderDetailViewFragment extends Fragment {
@@ -32,6 +35,7 @@ public class WashorderDetailViewFragment extends Fragment {
     protected EditText mEditTextPickupDate;
     protected EditText mEditTextPrice;
     protected EditText mEditTextComment;
+    protected Button mButtonAddedClothes;
     protected Washorder mWashorder;
 
 
@@ -71,8 +75,39 @@ public class WashorderDetailViewFragment extends Fragment {
         mEditTextPrice = (EditText) rootView.findViewById(R.id.washorderdetail_price_editText);
         mEditTextComment = (EditText) rootView.findViewById(R.id.washorderdetail_comment_editText);
         mEditTextAddress = (EditText) rootView.findViewById(R.id.washorderdetail_address_editText);
+        mButtonAddedClothes = (Button) rootView.findViewById(R.id.washorderdetail_addedclothes_button);
 
-        // END_INCLUDE(
+        // END_INCLUDE
+
+        //set listener
+        mButtonAddedClothes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Mappedlist is called.");
+
+                android.support.v4.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Create new fragment
+                MappedRecyclerViewFragment mappedrecyclerview = new MappedRecyclerViewFragment();
+
+                //bundle the washorder id
+                Bundle args = new Bundle();
+                args.putLong(SelectMappingClothesRecyclerViewFragment.ARG_WASHORDERID,mWashorder.getId());
+                mappedrecyclerview.setArguments(args);
+
+
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack if needed
+                transaction.replace(R.id.content_fragment, mappedrecyclerview);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
+
+            }
+        });
+
 
         //Fill Fields
         mEditTextName.setText(mWashorder.getName());

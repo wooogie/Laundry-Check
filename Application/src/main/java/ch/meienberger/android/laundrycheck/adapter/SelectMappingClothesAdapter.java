@@ -16,39 +16,35 @@
 
 package ch.meienberger.android.laundrycheck.adapter;
 
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-import ch.meienberger.android.SQL.ClothesDataSource;
-
+import ch.meienberger.android.SQL.MappingDataSource;
 import ch.meienberger.android.common.logger.Log;
-import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
-import ch.meienberger.android.laundrycheck.Fragments.ClothesDetailViewFragment;
 import ch.meienberger.android.laundrycheck.R;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
  */
-public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHolder>  {
+public class SelectMappingClothesAdapter extends RecyclerView.Adapter<SelectMappingClothesAdapter.ViewHolder>  {
     private static final String TAG = SelectMappingClothesAdapter.class.getSimpleName();
-    private static ClothesDataSource mdataSource;
-    private ArrayList<Clothes> mDataSet;
-    private static Fragment mparentFragment;
+    private static MappingDataSource mdataSource;
+    private static ArrayList<Clothes> mDataSet;
+    private static int washorderId;
+    private static View mView;
+
+
 
     // BEGIN_INCLUDE
     /**
@@ -58,6 +54,8 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         private final TextView name;
         private final TextView id;
         private final ImageView preview_image;
+        private final RecyclerView recyclerview;
+
 
         public ViewHolder(View v) {
             super(v);
@@ -65,23 +63,30 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Clothes with Id: " + getId().getText() + " clicked.");
+                    int clothesId = Integer.parseInt(getId().getText().toString());
+                    Clothes curClothes=null;
+                    for (int i = 0;i<mDataSet.size();i++) {
+                        if (mDataSet.get(i).getId()==clothesId){
+                            curClothes = mDataSet.get(i);
+                        }
 
-                    // Create new fragment with the ClothesId as arg and a new transaction
-                    Fragment DetailFragment = new ClothesDetailViewFragment();
-                    Bundle args = new Bundle();
-                    args.putLong(ClothesDetailViewFragment.ARG_CLOTHESID, Long.parseLong(getId().getText().toString()));
-                    DetailFragment.setArguments(args);
+                    }
 
-                    android.support.v4.app.FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();
+                    Log.d(TAG, "Clothes with Id: " + clothesId + " clicked and gets mapped");
 
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack if needed
-                    transaction.replace(R.id.content_fragment, DetailFragment);
-                    transaction.addToBackStack(null);
 
-                    // Commit the transaction
-                    transaction.commit();
+                    if(mdataSource.ClothesIsAlreadyMapped(washorderId,clothesId)) {
+                        //notify user that clothes is already mapped to this washorder
+                        Snackbar.make(mView, R.string.clothes_already_mapped, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }else{
+                        mdataSource.createMapping(washorderId,clothesId);
+                       // mDataSet.remove(curClothes);
+
+                        //notify user that clothes is mapped to this washorder
+                        Snackbar.make(mView, R.string.clothes_mapped, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
 
                 }
             });
@@ -90,6 +95,8 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             name = (TextView) v.findViewById(R.id.clothesrow_name_textview);
             id = (TextView) v.findViewById(R.id.clothesrow_id_textview);
             preview_image = (ImageView) v.findViewById(R.id.clothesrowitem_preview_imageView);
+            recyclerview = (RecyclerView) v.findViewById(R.id.mapped_recyclerView);
+
         }
 
         public TextView getName() {
@@ -99,6 +106,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             return id;
         }
         public ImageView getPreview_image() {return preview_image; }
+        public RecyclerView getRecyclerview() {return recyclerview; }
     }
 
     /**
@@ -106,10 +114,11 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
      *
      * @param dataSet String[] containing the data to populate views to be used by RecyclerView.
      */
-    public ClothesAdapter(ArrayList<Clothes> dataSet, ClothesDataSource dataSource, Fragment parentFragment) {
+    public SelectMappingClothesAdapter(ArrayList<Clothes> dataSet, MappingDataSource dataSource,int curWashorderId,View curView) {
         mDataSet = dataSet;
         mdataSource = dataSource;
-        mparentFragment = parentFragment;
+        washorderId = curWashorderId;
+        mView = curView;
     }
 
     // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)
@@ -137,6 +146,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         String tmp_string = Long.toString(mDataSet.get(position).getId());
         viewHolder.getId().setText(tmp_string);
 
+        setPreviewPicture(viewHolder,position);
     }
     // END_INCLUDE(recyclerViewOnBindViewHolder)
 
@@ -148,75 +158,23 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
 
     public void addItem() {
 
-        //generate Name
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-        String formattedDate = df.format(c.getTime());
+    }
 
-
-        //generate new clothes
-        mdataSource.open();
-        mdataSource.createClothes(formattedDate);
-        mDataSet = (ArrayList<Clothes>)mdataSource.getAllClothes();
-        mdataSource.close();
-
-        notifyItemInserted(0);
-        notifyItemChanged(0);
+    public void removeItem() {
+        mDataSet.remove(mDataSet.size()-1);
+        notifyItemRemoved(mDataSet.size());
     }
 
 
     public void removeItemAt(int position) {
-        final Clothes toDeleteClothes = mDataSet.get(position);
-        final int cur_Position = position;
 
 
-
-        //double check if the click was not a misstake
-        AlertDialog.Builder builder = new AlertDialog.Builder(mparentFragment.getContext());
-        builder.setMessage(R.string.confirm_deleteClothes_message)
-                .setTitle(R.string.confirm_delete_title);
-        builder.setCancelable(true);
-        builder.setNegativeButton(R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //delete picture
-                File oldPhotoFile = new File(toDeleteClothes.getPicture());
-                oldPhotoFile.delete();
-
-                //delete from DB
-                mdataSource.open();
-                mdataSource.deleteClothes(toDeleteClothes);
-                mdataSource.close();
-
-                //remove from Dataset
-                mDataSet.remove(cur_Position);
-                notifyItemRemoved(cur_Position);
-
-                           }
-        });
-
-        builder.setPositiveButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                notifyItemChanged(cur_Position);
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
-    @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        setPreviewPicture(holder,holder.getAdapterPosition());
-    }
-
-
-    public void setPreviewPicture(ViewHolder viewHolder,final int position) {
-
+    private void setPreviewPicture(ViewHolder viewHolder,final int position) {
         // Get the dimensions of the View
-        int targetW = mparentFragment.getResources().getDimensionPixelSize(R.dimen.image_preview_with);
-        int targetH = mparentFragment.getResources().getDimensionPixelSize(R.dimen.list_item_height);
+        int targetW = mView.getResources().getDimensionPixelSize(R.dimen.image_preview_with);
+        int targetH = mView.getResources().getDimensionPixelSize(R.dimen.list_item_height);
         String PhotoPath = mDataSet.get(position).getPicture();
 
         // Get the dimensions of the bitmap
@@ -227,13 +185,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = 1;
-        if (photoH > targetH || photoW > targetW)
-        {
-            scaleFactor = photoW > photoH
-                    ? photoH / targetH
-                    : photoW / targetW;
-        }
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -241,6 +193,15 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
 
         Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
         viewHolder.getPreview_image().setImageBitmap(bitmap);
+    }
+
+    private int getDatasetPosition(Clothes searchedClothes){
+        for (int i=0;i<mDataSet.size();i++){
+            if (mDataSet.get(i)==searchedClothes) {
+                return i;
+            }
+                    }
+                return 0;
     }
 
 }

@@ -47,4 +47,18 @@
     <string name="lastwashed">Last time washed</string>
     <string name="pieces">Number of pieces</string>
     <string name="clothestype">Type of clothes</string>
+    <string name="mapping">List of added clothes</string>
+    <string name="addedclothes">Added clothes</string>
+    <string name="addclothes">Add clothes</string>
+    <string name="returned">Returned</string>
+    <string name="clothes_detail">Added Clothes</string>
+    <string name="clothes_already_mapped">This clothes is already mapped</string>
+    <string name="clothes_mapped">Added</string>
+    <string name="confirm_undo_title">Confirm undo</string>
+    <string name="confirm_undo_message">Do you really want to set this clothes to unwashed?</string>
+    <string name="confirm_deleteClothes_message">Do you really want to delete the clothes?</string>
+    <string name="confirm_delete_title">Confirm delete</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

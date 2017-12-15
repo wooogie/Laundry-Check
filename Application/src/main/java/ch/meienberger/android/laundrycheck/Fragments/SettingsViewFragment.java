@@ -8,19 +8,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.SharedPreferencesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.EditText;
 
-import ch.meienberger.android.SQL.ClothesDataSource;
-import ch.meienberger.android.common.logger.Log;
 import ch.meienberger.android.laundrycheck.R;
-import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 
 public class SettingsViewFragment extends Fragment {
 

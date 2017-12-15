@@ -17,8 +17,8 @@ public class ClothesDataSource {
 
     private static final String LOG_TAG = ClothesDataSource.class.getSimpleName();
 
-    private SQLiteDatabase database;
-    private LaundrycheckDbHelper dbHelper;
+    protected SQLiteDatabase database;
+    protected LaundrycheckDbHelper dbHelper;
     private String[] clothes_columns = {
             LaundrycheckDbHelper.COLUMN_ID,
             LaundrycheckDbHelper.COLUMN_NAME,
@@ -85,7 +85,7 @@ public class ClothesDataSource {
     }
 
     /*
-     * Get the washorder by Id
+     * Get the clothes by Id
      */
     public Clothes getClothes(long Id) {
 

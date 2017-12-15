@@ -10,7 +10,7 @@ import java.util.Calendar;
 
 
 
-public class Clothes {
+public class Clothes implements Cloneable {
 
 
     private long id = 0;
@@ -102,7 +102,7 @@ public class Clothes {
     }
 
     public void washed() {
-        this.washcount = this.washcount++;
+        this.washcount = this.washcount = this.washcount + 1;
 
         //generate Date and set last washed date
         Calendar c = Calendar.getInstance();
@@ -110,6 +110,10 @@ public class Clothes {
         String formattedDate = df.format(c.getTime());
 
         this.last_washed = formattedDate;
+    }
+
+    public void undo_washed(){
+        this.washcount = this.washcount - 1;
     }
 
     public String getLast_washed() {
@@ -134,5 +138,42 @@ public class Clothes {
 
     public void setClothestype(Clothestype clothestype) {
         this.clothestype = clothestype;
+    }
+
+    public boolean checkChanges(Clothes otherClothes){
+
+        if (!this.getPicture().contentEquals(otherClothes.getPicture())){
+            return true;
+        }
+        if (this.getClothestype()!=otherClothes.getClothestype()){
+            return true;
+        }
+        if (!this.getLast_washed().contentEquals(otherClothes.getLast_washed())){
+            return true;
+        }
+        if (!this.getName().contentEquals(otherClothes.getName())){
+            return true;
+        }
+        if (!this.getRfid_id().contentEquals(otherClothes.getRfid_id())){
+            return true;
+        }
+        if (this.getPieces()!=otherClothes.getPieces()){
+            return true;
+        }
+        if (this.getWashcount()!=otherClothes.getWashcount()){
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Clothes clone(){
+        try {
+            return (Clothes)super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

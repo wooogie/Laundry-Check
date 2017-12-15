@@ -10,14 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +30,17 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import ch.meienberger.android.SQL.ClothesDataSource;
 import ch.meienberger.android.common.logger.Log;
 import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 import ch.meienberger.android.laundrycheck.R;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static ch.meienberger.android.laundrycheck.Fragments.SettingsViewFragment.PREF_USE_RFID;
+import static ch.meienberger.android.laundrycheck.R.dimen.preview_image_height;
 
 public class ClothesDetailViewFragment extends Fragment {
 
@@ -47,8 +51,8 @@ public class ClothesDetailViewFragment extends Fragment {
 
     private long mClothesid;
     private ClothesDataSource dataSource;
-
     protected ImageView mImageViewPreview;
+    protected FloatingActionButton mCaptureNewPhoto;
     protected EditText mEditTextName;
     protected EditText mEditTextRfidId;
     protected TextView mTextViewRfidIdLable;
@@ -57,8 +61,9 @@ public class ClothesDetailViewFragment extends Fragment {
     protected EditText mEditTextLastwashed;
     protected EditText mEditTextPieces;
     protected EditText mEditTextClothestype;
-
     protected static Clothes mClothes = new Clothes();
+    protected static Clothes mClothesBackup;
+    protected static File newCapturedPhotofile;
 
 
     @Override
@@ -90,6 +95,7 @@ public class ClothesDetailViewFragment extends Fragment {
 
         // BEGIN_INCLUDE
         mImageViewPreview = (ImageView) rootView.findViewById(R.id.clothesdetail_preview_imageView);
+        mCaptureNewPhoto = (FloatingActionButton) rootView.findViewById(R.id.button_take_clothespicture);
         mEditTextName = (EditText) rootView.findViewById(R.id.clothesdetail_name_editText);
         mTextViewRfidIdLable = (TextView) rootView.findViewById(R.id.rfid_id_lable);
         mEditTextRfidId = (EditText) rootView.findViewById(R.id.clothesdetail_rfid_id_editText);
@@ -114,10 +120,16 @@ public class ClothesDetailViewFragment extends Fragment {
         mImageViewPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+           //     dispatchTakePictureIntent();
             }
         });
 
+        mCaptureNewPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
 
 
         return rootView;
@@ -150,10 +162,11 @@ public class ClothesDetailViewFragment extends Fragment {
 
         //set picture
         if (!mClothes.getPicture().equalsIgnoreCase("")){
-            Bitmap bitmap = BitmapFactory.decodeFile(mClothes.getPicture().replace("file:",""));
-            mImageViewPreview.setImageBitmap(bitmap);
+            setPic();
         }
 
+        //get backup of clothes to check changes
+        mClothesBackup = mClothes.clone();
         Log.d(TAG, "method onResume is called. DB is getting opened");
         dataSource.open();
     }
@@ -168,12 +181,16 @@ public class ClothesDetailViewFragment extends Fragment {
         mClothes.setPieces(Integer.parseInt(mEditTextPieces.getText().toString()));
         mClothes.setClothestype(Clothes.Clothestype.valueOf(mEditTextClothestype.getText().toString()));
 
-        dataSource.updateClothes(mClothes);
-        dataSource.close();
+        //Check for changes
+        if (mClothes.checkChanges(mClothesBackup)){
+            dataSource.open();
+            dataSource.updateClothes(mClothes);
+            dataSource.close();
 
-        //notify user
-        Snackbar.make(getView(), R.string.changes_saved, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+            //notify user
+            Snackbar.make(getView(), R.string.changes_saved, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
     }
 
     private void dispatchTakePictureIntent() {
@@ -210,15 +227,20 @@ public class ClothesDetailViewFragment extends Fragment {
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mClothes.setPicture("file:" + image.getAbsolutePath());
+
+        // Save a file
+        newCapturedPhotofile = image;
+
         return image;
     }
 
     private void setPic() {
         // Get the dimensions of the View
-        int targetW = mImageViewPreview.getWidth();
-        int targetH = mImageViewPreview.getHeight();
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        int targetW = metrics.widthPixels;
+        int targetH = getResources().getDimensionPixelSize(R.dimen.preview_image_height);
         String PhotoPath = mClothes.getPicture();
 
         // Get the dimensions of the bitmap
@@ -229,7 +251,11 @@ public class ClothesDetailViewFragment extends Fragment {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = 1;
+        if (photoH > targetH || photoW > targetW)
+        {
+            scaleFactor = photoW / targetW;
+        }
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -247,9 +273,21 @@ public class ClothesDetailViewFragment extends Fragment {
             mImageViewPreview.setImageBitmap(imageBitmap);
         }
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            //delete old photo
+            File oldPhotoFile = new File(mClothes.getPicture());
+            oldPhotoFile.delete();
+            Log.d(TAG, "Old clothes picture is deleted.");
+
+
+            mClothes.setPicture(newCapturedPhotofile.getAbsolutePath());
             setPic();
+            dataSource.updateClothes(mClothes);
         }
-    }
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED) {
+
+        }
+
+        }
 
 
 

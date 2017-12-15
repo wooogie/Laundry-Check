@@ -31,21 +31,25 @@ import android.widget.Button;
 import java.util.ArrayList;
 
 import ch.meienberger.android.SQL.ClothesDataSource;
+import ch.meienberger.android.SQL.MappingDataSource;
 import ch.meienberger.android.common.logger.Log;
-import ch.meienberger.android.laundrycheck.adapter.ClothesTouchCallback;
-import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 import ch.meienberger.android.laundrycheck.R;
 import ch.meienberger.android.laundrycheck.adapter.ClothesAdapter;
+import ch.meienberger.android.laundrycheck.adapter.ClothesTouchCallback;
+import ch.meienberger.android.laundrycheck.adapter.SelectMappingClothesAdapter;
+import ch.meienberger.android.laundrycheck.adapter.SelectMappingClothesTouchCallback;
+import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 
 
-public class ClothesinventoryRecyclerViewFragment extends Fragment {
+public class SelectMappingClothesRecyclerViewFragment extends Fragment {
 
-    private static final String TAG = ClothesinventoryRecyclerViewFragment.class.getSimpleName();
+    private static final String TAG = SelectMappingClothesRecyclerViewFragment.class.getSimpleName();
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
-    private ClothesDataSource dataSource;
+    public static final String ARG_WASHORDERID = "arg_washorderid";
+    private MappingDataSource dataSource;
 
 
-    public ClothesinventoryRecyclerViewFragment() {
+    public SelectMappingClothesRecyclerViewFragment() {
     }
 
 
@@ -56,12 +60,11 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
 
     protected LayoutManagerType mCurrentLayoutManagerType;
 
-    protected FloatingActionButton mButtonAddItem;
     protected Button mClickedItem;
     protected Button mButtonRemoveItem;
 
     protected RecyclerView mRecyclerView;
-    protected ClothesAdapter mAdapter;
+    protected SelectMappingClothesAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected ArrayList<Clothes> mDataset;
 
@@ -80,6 +83,7 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
 
         // BEGIN_INCLUDE(initializeRecyclerView)
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.clothes_recyclerView);
+
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
@@ -96,28 +100,27 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
 
         //get already stored data to the adapter
         //init SQL
-        dataSource = new ClothesDataSource(this.getContext());
+        dataSource = new MappingDataSource(this.getContext());
         dataSource.open();
         mDataset = (ArrayList<Clothes>)dataSource.getAllClothes();
         dataSource.close();
 
-        mAdapter = new ClothesAdapter(mDataset, dataSource, this);
+        //get selected washorder
+        Bundle args = getArguments();
+
+        long mWashorderId_long = (args.getLong(ARG_WASHORDERID));
+        int mWashorderId = Integer.parseInt(String.valueOf(mWashorderId_long));
+        Log.d(TAG, "Washorder with Id: " + mWashorderId + " selected.");
+
+        mAdapter = new SelectMappingClothesAdapter(mDataset, dataSource,mWashorderId,rootView);
         // Set custom Clothesadapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.Callback callback = new ClothesTouchCallback(mAdapter);
+        ItemTouchHelper.Callback callback = new SelectMappingClothesTouchCallback(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecyclerView);
 
         // END_INCLUDE(initializeRecyclerView)
-
-        mButtonAddItem = (FloatingActionButton) rootView.findViewById(R.id.button_add_clothes);
-        mButtonAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAdapter.addItem();
-            }
-        });
 
         return rootView;
     }

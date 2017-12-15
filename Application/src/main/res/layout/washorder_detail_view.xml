@@ -173,4 +173,16 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/space_heigh" />
 
+    <Button
+        android:id="@+id/washorderdetail_addedclothes_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:text="@string/addedclothes" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_heigh" />
+
 </LinearLayout>

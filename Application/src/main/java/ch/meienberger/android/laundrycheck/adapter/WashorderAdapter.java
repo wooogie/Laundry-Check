@@ -59,12 +59,13 @@ public class WashorderAdapter extends RecyclerView.Adapter<WashorderAdapter.View
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Washorder with Id: " + getId().getText() + " clicked.");
+                    long curWashorderId = Long.parseLong(getId().getText().toString());
+                    Log.d(TAG, "Washorder with Id: " + curWashorderId + " clicked.");
 
                     // Create new fragment with the WashorderID as arg and a new transaction
                     Fragment DetailFragment = new WashorderDetailViewFragment();
                     Bundle args = new Bundle();
-                    args.putLong(WashorderDetailViewFragment.ARG_WASHORDERID, Long.parseLong(getId().getText().toString()));
+                    args.putLong(WashorderDetailViewFragment.ARG_WASHORDERID,curWashorderId);
                     DetailFragment.setArguments(args);
 
                     android.support.v4.app.FragmentTransaction transaction = mparentFragment.getFragmentManager().beginTransaction();

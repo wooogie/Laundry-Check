@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/recycler_horizontal_margin">
 
         <TextView
-            android:id="@+id/clothes_row_name"
+            android:id="@+id/clothesrow_name_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -41,12 +41,12 @@
             android:text="@string/element_text" />
 
         <TextView
-            android:id="@+id/clothes_row_id"
+            android:id="@+id/clothesrow_id_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/clothes_row_name"
+            android:layout_below="@+id/mappedrow_name_textview"
             android:layout_gravity="left"
             android:text="test" />
 

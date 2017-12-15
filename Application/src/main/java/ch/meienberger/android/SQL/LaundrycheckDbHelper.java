@@ -16,6 +16,7 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_WASH_ORDERS = "wash_orders";
     public static final String TABLE_CLOTHES = "clothes";
+    public static final String TABLE_MAPPING = "mapping";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_RFID_ID = "rfid_id";
@@ -30,7 +31,10 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_WASHCOUNT = "washcount";
     public static final String COLUMN_LAST_WASHED = "last_washed";
     public static final String COLUMN_PIECES = "pieces";
-    public static final String COLUMN_CLOTHESTYPE = "CLOTHESTYPE";
+    public static final String COLUMN_CLOTHESTYPE = "clothestype";
+    public static final String COLUMN_CLOTHES_ID = "clothes_id";
+    public static final String COLUMN_WASHORDER_ID = "washorder_id";
+    public static final String COLUMN_CLOTHES_IS_RETURNED = "clothes_is_returned";
 
 
     public static final String SQL_CREATE_TABLE_WASHORDERS =
@@ -55,6 +59,13 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
                     COLUMN_PIECES + " INTEGER NOT NULL, " +
                     COLUMN_CLOTHESTYPE + " INTEGER NOT NULL);";
 
+    public static final String SQL_CREATE_TABLE_MAPPING =
+            "CREATE TABLE " + TABLE_MAPPING +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_WASHORDER_ID + " INTEGER NOT NULL, " +
+                    COLUMN_CLOTHES_ID + " INTEGER NOT NULL, " +
+                    COLUMN_CLOTHES_IS_RETURNED + " BIT NOT NULL);";
+
 
     public LaundrycheckDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -67,11 +78,14 @@ public class LaundrycheckDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         try {
-            Log.d(LOG_TAG, "Table is going to be created by command: " + SQL_CREATE_TABLE_WASHORDERS);
+            Log.d(LOG_TAG, "Table WASHORDERS is going to be created by command: " + SQL_CREATE_TABLE_WASHORDERS);
             sqLiteDatabase.execSQL(SQL_CREATE_TABLE_WASHORDERS);
 
-            Log.d(LOG_TAG, "Table is going to be created by command: " + SQL_CREATE_TABLE_CLOTHES);
+            Log.d(LOG_TAG, "Table CLOTHES is going to be created by command: " + SQL_CREATE_TABLE_CLOTHES);
             sqLiteDatabase.execSQL(SQL_CREATE_TABLE_CLOTHES);
+
+            Log.d(LOG_TAG, "Table MAPPING is going to be created by command: " + SQL_CREATE_TABLE_MAPPING);
+            sqLiteDatabase.execSQL(SQL_CREATE_TABLE_MAPPING);
         }
         catch (Exception ex) {
             Log.e(LOG_TAG, "Fault while creating table: " + ex.getMessage());
