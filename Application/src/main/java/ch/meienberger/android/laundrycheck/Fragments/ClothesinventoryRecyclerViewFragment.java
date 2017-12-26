@@ -54,26 +54,6 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
     public ClothesinventoryRecyclerViewFragment() {
     }
 
-    public final class TaskResult {
-        private Bitmap mbitmap;
-        private int mposition;
-
-        TaskResult(Bitmap bitmap, int position){
-            mbitmap = bitmap;
-            mposition = position;
-        }
-
-        public Bitmap getBitmap() {
-            return mbitmap;
-        }
-
-        public int getPosition() {
-            return mposition;
-        }
-    }
-
-
-
         private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
@@ -106,20 +86,6 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
             public void onGlobalLayout(){
                 View curChild;
 
-                    for(int i = 0;i<mRecyclerView.getChildCount();++i) {
-
-                        curChild = mRecyclerView.getChildAt(i);
-
-                        //Create for all preview pictures a own Task for getting the right resolution.
-                        //Set Picturepreview by a new thread
-                        LoadPreviewPictureTask loadpreviewpicture = new LoadPreviewPictureTask();
-                        loadpreviewpicture.execute(
-                                String.valueOf(mRecyclerView.getChildAdapterPosition(curChild)),
-                                String.valueOf(getActivity().getResources().getDimensionPixelSize(R.dimen.image_preview_with)),
-                                String.valueOf(getActivity().getResources().getDimensionPixelSize(R.dimen.list_item_height)),
-                                mDataset.get(mRecyclerView.getChildAdapterPosition(curChild)).getPicture(),
-                                String.valueOf(mRecyclerView.getChildLayoutPosition(curChild)));
-                    }
                 rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         };
@@ -207,64 +173,6 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-
-
-
-    /**
-     * This task loads the picture in the right resolution into the Viewholder.
-     * It is going to run in the background because it need much time to do the downscaling and intrrupt else the UI.
-     * params([0]=position,[1]=imageWith,[2]=imageHeight,[3]=Picturepath,[4]=Layoutposition,
-     * */
-    public class LoadPreviewPictureTask extends AsyncTask<String, Integer, TaskResult> {
-
-        private final String LOG_TAG = LoadPreviewPictureTask.class.getSimpleName();
-
-        protected TaskResult doInBackground(String... params) {
-
-
-            // Get Parameter of task
-            int position = Integer.parseInt(params[0]);
-            int targetW = Integer.parseInt(params[1]);
-            int targetH = Integer.parseInt(params[2]);
-            String picturepath = String.valueOf(params[3]);
-            int layoutposition = Integer.parseInt(params[4]);
-
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picturepath.replace("file:", ""), bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = 1;
-        if (photoH > targetH || photoW > targetW)
-        {
-            scaleFactor = photoW > photoH
-                    ? photoH / targetH
-                    : photoW / targetW;
-        }
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(picturepath.replace("file:",""), bmOptions);
-
-
-            return new TaskResult(bitmap,layoutposition);
-        }
-
-
-        protected void onPostExecute(TaskResult result) {
-            Log.d(TAG, "hintergroundtask fertig mit" + result.getPosition());
-            final View holder = (View)mRecyclerView.getChildAt(result.getPosition());
-            //set bitmap
-            mAdapter.updatePreviewpicture(result.getPosition(),result.mbitmap);
-        }
-
-           }
 
     /**
      * Lifecycle methods
