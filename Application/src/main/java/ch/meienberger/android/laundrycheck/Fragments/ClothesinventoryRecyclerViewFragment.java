@@ -17,15 +17,21 @@
 package ch.meienberger.android.laundrycheck.Fragments;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.RecyclerListener;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -48,8 +54,27 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
     public ClothesinventoryRecyclerViewFragment() {
     }
 
+    public final class TaskResult {
+        private Bitmap mbitmap;
+        private int mposition;
 
-    private enum LayoutManagerType {
+        TaskResult(Bitmap bitmap, int position){
+            mbitmap = bitmap;
+            mposition = position;
+        }
+
+        public Bitmap getBitmap() {
+            return mbitmap;
+        }
+
+        public int getPosition() {
+            return mposition;
+        }
+    }
+
+
+
+        private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
@@ -57,8 +82,6 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
     protected LayoutManagerType mCurrentLayoutManagerType;
 
     protected FloatingActionButton mButtonAddItem;
-    protected Button mClickedItem;
-    protected Button mButtonRemoveItem;
 
     protected RecyclerView mRecyclerView;
     protected ClothesAdapter mAdapter;
@@ -75,11 +98,36 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.clothesinventory_recycler_view_frag, container, false);
+        final View rootView = inflater.inflate(R.layout.clothesinventory_recycler_view_frag, container, false);
         rootView.setTag(TAG);
+        final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
+
+            @Override
+            public void onGlobalLayout(){
+                View curChild;
+
+                    for(int i = 0;i<mRecyclerView.getChildCount();++i) {
+
+                        curChild = mRecyclerView.getChildAt(i);
+
+                        //Create for all preview pictures a own Task for getting the right resolution.
+                        //Set Picturepreview by a new thread
+                        LoadPreviewPictureTask loadpreviewpicture = new LoadPreviewPictureTask();
+                        loadpreviewpicture.execute(
+                                String.valueOf(mRecyclerView.getChildAdapterPosition(curChild)),
+                                String.valueOf(getActivity().getResources().getDimensionPixelSize(R.dimen.image_preview_with)),
+                                String.valueOf(getActivity().getResources().getDimensionPixelSize(R.dimen.list_item_height)),
+                                mDataset.get(mRecyclerView.getChildAdapterPosition(curChild)).getPicture(),
+                                String.valueOf(mRecyclerView.getChildLayoutPosition(curChild)));
+                    }
+                rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        };
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
 
         // BEGIN_INCLUDE(initializeRecyclerView)
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.clothes_recyclerView);
+
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
@@ -105,10 +153,11 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
         // Set custom Clothesadapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
+
+
         ItemTouchHelper.Callback callback = new ClothesTouchCallback(mAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mRecyclerView);
-
         // END_INCLUDE(initializeRecyclerView)
 
         mButtonAddItem = (FloatingActionButton) rootView.findViewById(R.id.button_add_clothes);
@@ -158,6 +207,65 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
+
+
+
+    /**
+     * This task loads the picture in the right resolution into the Viewholder.
+     * It is going to run in the background because it need much time to do the downscaling and intrrupt else the UI.
+     * params([0]=position,[1]=imageWith,[2]=imageHeight,[3]=Picturepath,[4]=Layoutposition,
+     * */
+    public class LoadPreviewPictureTask extends AsyncTask<String, Integer, TaskResult> {
+
+        private final String LOG_TAG = LoadPreviewPictureTask.class.getSimpleName();
+
+        protected TaskResult doInBackground(String... params) {
+
+
+            // Get Parameter of task
+            int position = Integer.parseInt(params[0]);
+            int targetW = Integer.parseInt(params[1]);
+            int targetH = Integer.parseInt(params[2]);
+            String picturepath = String.valueOf(params[3]);
+            int layoutposition = Integer.parseInt(params[4]);
+
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(picturepath.replace("file:", ""), bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = 1;
+        if (photoH > targetH || photoW > targetW)
+        {
+            scaleFactor = photoW > photoH
+                    ? photoH / targetH
+                    : photoW / targetW;
+        }
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(picturepath.replace("file:",""), bmOptions);
+
+
+            return new TaskResult(bitmap,layoutposition);
+        }
+
+
+        protected void onPostExecute(TaskResult result) {
+            Log.d(TAG, "hintergroundtask fertig mit" + result.getPosition());
+            final View holder = (View)mRecyclerView.getChildAt(result.getPosition());
+            //set bitmap
+            mAdapter.updatePreviewpicture(result.getPosition(),result.mbitmap);
+        }
+
+           }
+
     /**
      * Lifecycle methods
      */
@@ -166,9 +274,6 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
         super.onResume();
         Activity curActivity =  ((Activity) getContext());
         curActivity.setTitle(R.string.action_clothes);
-
-     Log.d(TAG, "method onResume is called. DB is getting opened");
-     dataSource.open();
     }
 
     @Override
@@ -178,11 +283,5 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
     Log.d(TAG, "method onPause is called. DB is getting closed");
     dataSource.close();
     }
-
-
-
-
-
-
 
 }

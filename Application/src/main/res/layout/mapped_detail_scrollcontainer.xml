@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ch.meienberger.android.laundrycheck.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/mappeddetail_returned_lable"
+            android:layout_width="@dimen/column_rightdistance"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_columnWeight="1"
+            android:editable="false"
+            android:inputType="textPersonName"
+            android:text="@string/returned" />
+
+        <EditText
+            android:id="@+id/mappeddetail_clothesdetail_lable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@id/mappeddetail_returned_lable"
+            android:layout_columnWeight="2"
+            android:editable="false"
+            android:inputType="textPersonName"
+            android:text="@string/clothes_detail" />
+
+
+
+        <include
+            layout="@layout/mapped_recycler_view_frag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mappeddetail_clothesdetail_lable"
+            ></include>
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

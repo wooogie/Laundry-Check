@@ -181,6 +181,8 @@ public class MappingDataSource extends ClothesDataSource {
         return mappinglist;
     }
 
+
+
     /*
      * Deletes the specific mapping form the DB
      */

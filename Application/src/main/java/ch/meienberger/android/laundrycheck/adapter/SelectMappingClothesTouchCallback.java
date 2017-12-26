@@ -23,6 +23,5 @@ public class SelectMappingClothesTouchCallback extends ItemTouchHelper.SimpleCal
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        mSelectMappingClothesAdapter.removeItemAt(viewHolder.getAdapterPosition());
-    }
+        }
 }

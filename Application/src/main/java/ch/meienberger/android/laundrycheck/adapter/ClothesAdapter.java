@@ -19,6 +19,7 @@ package ch.meienberger.android.laundrycheck.adapter;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -33,10 +34,15 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
 
 import ch.meienberger.android.SQL.ClothesDataSource;
 
 import ch.meienberger.android.common.logger.Log;
+import ch.meienberger.android.laundrycheck.Fragments.ClothesinventoryRecyclerViewFragment;
 import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 import ch.meienberger.android.laundrycheck.Fragments.ClothesDetailViewFragment;
 import ch.meienberger.android.laundrycheck.R;
@@ -45,10 +51,12 @@ import ch.meienberger.android.laundrycheck.R;
  * Provide views to RecyclerView with data from mDataSet.
  */
 public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHolder>  {
-    private static final String TAG = SelectMappingClothesAdapter.class.getSimpleName();
+    private static final String TAG = ClothesAdapter.class.getSimpleName();
     private static ClothesDataSource mdataSource;
     private ArrayList<Clothes> mDataSet;
     private static Fragment mparentFragment;
+    private static ViewGroup mviewgroup;
+    private static Map<String,Bitmap> mbitmaps = new Hashtable<String,Bitmap>();
 
     // BEGIN_INCLUDE
     /**
@@ -86,6 +94,8 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
                 }
             });
 
+
+
             //link view holder to xml layout
             name = (TextView) v.findViewById(R.id.clothesrow_name_textview);
             id = (TextView) v.findViewById(R.id.clothesrow_id_textview);
@@ -99,6 +109,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             return id;
         }
         public ImageView getPreview_image() {return preview_image; }
+
     }
 
     /**
@@ -120,12 +131,11 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.clothes_row_item, viewGroup, false);
 
+        mviewgroup = viewGroup;
+
         return new ViewHolder(v);
     }
-    // END_INCLUDE(recyclerViewOnCreateViewHolder)
 
-    // BEGIN_INCLUDE(recyclerViewOnBindViewHolder)
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Log.d(TAG, "Clothes " + position + " set.");
@@ -136,6 +146,11 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
 
         String tmp_string = Long.toString(mDataSet.get(position).getId());
         viewHolder.getId().setText(tmp_string);
+
+        Bitmap curBitmap = mbitmaps.get(mDataSet.get(position).getPicture());
+        if(curBitmap != null){
+            viewHolder.getPreview_image().setImageBitmap(curBitmap);
+        }
 
     }
     // END_INCLUDE(recyclerViewOnBindViewHolder)
@@ -206,41 +221,13 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         dialog.show();
     }
 
-    @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        setPreviewPicture(holder,holder.getAdapterPosition());
-    }
-
-
-    public void setPreviewPicture(ViewHolder viewHolder,final int position) {
-
-        // Get the dimensions of the View
-        int targetW = mparentFragment.getResources().getDimensionPixelSize(R.dimen.image_preview_with);
-        int targetH = mparentFragment.getResources().getDimensionPixelSize(R.dimen.list_item_height);
-        String PhotoPath = mDataSet.get(position).getPicture();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = 1;
-        if (photoH > targetH || photoW > targetW)
-        {
-            scaleFactor = photoW > photoH
-                    ? photoH / targetH
-                    : photoW / targetW;
+    public void updatePreviewpicture(int position, Bitmap bitmap) {
+        String curPicturepath = mDataSet.get(position).getPicture();
+        if (!curPicturepath.isEmpty()){
+            mbitmaps.put(curPicturepath,bitmap);
+            notifyItemChanged(position);
         }
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
-        viewHolder.getPreview_image().setImageBitmap(bitmap);
     }
 
-}
+
+    }

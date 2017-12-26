@@ -50,7 +50,7 @@ public class SelectMappingClothesAdapter extends RecyclerView.Adapter<SelectMapp
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private final TextView id;
         private final ImageView preview_image;
@@ -81,7 +81,9 @@ public class SelectMappingClothesAdapter extends RecyclerView.Adapter<SelectMapp
                                 .setAction("Action", null).show();
                     }else{
                         mdataSource.createMapping(washorderId,clothesId);
-                       // mDataSet.remove(curClothes);
+                        mDataSet.remove(curClothes);
+                        notifyItemRemoved(getAdapterPosition());
+                        // removeItem(getAdapterPosition());
 
                         //notify user that clothes is mapped to this washorder
                         Snackbar.make(mView, R.string.clothes_mapped, Snackbar.LENGTH_LONG)
@@ -156,19 +158,11 @@ public class SelectMappingClothesAdapter extends RecyclerView.Adapter<SelectMapp
         return mDataSet.size();
     }
 
-    public void addItem() {
-
-    }
-
-    public void removeItem() {
-        mDataSet.remove(mDataSet.size()-1);
-        notifyItemRemoved(mDataSet.size());
-    }
 
 
-    public void removeItemAt(int position) {
-
-
+    public void removeItem(int position) {
+        mDataSet.remove(position);
+        notifyItemRemoved(position);
     }
 
     private void setPreviewPicture(ViewHolder viewHolder,final int position) {
@@ -203,5 +197,6 @@ public class SelectMappingClothesAdapter extends RecyclerView.Adapter<SelectMapp
                     }
                 return 0;
     }
+
 
 }
