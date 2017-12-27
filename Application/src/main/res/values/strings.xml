@@ -60,5 +60,6 @@
     <string name="confirm_delete_title">Confirm delete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="select_clotes_to_washorder">Select clothes to washorder</string>
 
 </resources>

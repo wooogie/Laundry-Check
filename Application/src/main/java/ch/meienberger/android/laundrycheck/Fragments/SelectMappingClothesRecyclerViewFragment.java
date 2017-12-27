@@ -78,11 +78,11 @@ public class SelectMappingClothesRecyclerViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.clothesinventory_recycler_view_frag, container, false);
+        View rootView = inflater.inflate(R.layout.selectclothes_recycler_view_frag, container, false);
         rootView.setTag(TAG);
 
         // BEGIN_INCLUDE(initializeRecyclerView)
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.clothes_recyclerView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.selectclothes_recyclerView);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -103,6 +103,7 @@ public class SelectMappingClothesRecyclerViewFragment extends Fragment {
         dataSource = new MappingDataSource(this.getContext());
         dataSource.open();
         mDataset = (ArrayList<Clothes>)dataSource.getAllClothes();
+        //// TODO: 27.12.2017  only clothes which have no mapping to this washorder
         dataSource.close();
 
         //get selected washorder
@@ -117,8 +118,6 @@ public class SelectMappingClothesRecyclerViewFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         ItemTouchHelper.Callback callback = new SelectMappingClothesTouchCallback(mAdapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(mRecyclerView);
 
         // END_INCLUDE(initializeRecyclerView)
 
@@ -168,7 +167,7 @@ public class SelectMappingClothesRecyclerViewFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Activity curActivity =  ((Activity) getContext());
-        curActivity.setTitle(R.string.action_clothes);
+        curActivity.setTitle(R.string.select_clotes_to_washorder);
 
      Log.d(TAG, "method onResume is called. DB is getting opened");
      dataSource.open();

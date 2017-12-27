@@ -158,13 +158,20 @@ public class ClothesDataSource {
     }
 
     /*
-     * Deletes the specific washorder form the DB
+     * Deletes the specific washorder form the DB and all references.
      */
     public void deleteClothes(Clothes curClothes){
         long id = curClothes.getId();
 
+        //delete clothes
         database.delete(LaundrycheckDbHelper.TABLE_CLOTHES,
                 LaundrycheckDbHelper.COLUMN_ID + "=" + id,
+                null);
+
+
+        //delete mapping
+        database.delete(LaundrycheckDbHelper.TABLE_MAPPING,
+                LaundrycheckDbHelper.COLUMN_CLOTHES_ID + "=" + id,
                 null);
 
         Log.d(LOG_TAG, "Clothes deletet! ID: " + id);

@@ -214,9 +214,14 @@ public class MappingAdapter extends RecyclerView.Adapter<MappingAdapter.ViewHold
     }
 
     public void removeItemAt(int position) {
+        Mapping curMapping = mMappingDataSet.get(position);
 
+        //remove from DB
+        mMappingdataSource.deleteMapping(curMapping);
 
-
+        //remove from Dataset
+        mMappingDataSet.remove(position);
+        notifyItemRemoved(position);
     }
 
     private void setPreviewPicture(ViewHolder viewHolder,final int position) {
