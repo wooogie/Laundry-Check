@@ -23,7 +23,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -169,7 +168,7 @@ public class SelectMappingClothesAdapter extends RecyclerView.Adapter<SelectMapp
         // Get the dimensions of the View
         int targetW = mView.getResources().getDimensionPixelSize(R.dimen.image_preview_with);
         int targetH = mView.getResources().getDimensionPixelSize(R.dimen.list_item_height);
-        String PhotoPath = mDataSet.get(position).getPicture();
+        String PhotoPath = mDataSet.get(position).getPicturePath();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();

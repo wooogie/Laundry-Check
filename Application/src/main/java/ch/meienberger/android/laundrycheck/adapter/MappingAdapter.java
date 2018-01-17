@@ -176,6 +176,11 @@ public class MappingAdapter extends RecyclerView.Adapter<MappingAdapter.ViewHold
         String tmp_string = Long.toString(mMappingDataSet.get(position).getId());
         viewHolder.getId().setText(tmp_string);
 
+        //get bitmap
+        Bitmap curBitmap = BitmapFactory.decodeFile(mMappedClothes.getBitmapPath());
+        viewHolder.getPreview_image().setImageBitmap(curBitmap);
+
+
         int backgroundcolor;
         if(mMapping.isClothes_returned()){
             backgroundcolor = mContext.getColor(R.color.colorReturned);
@@ -228,7 +233,7 @@ public class MappingAdapter extends RecyclerView.Adapter<MappingAdapter.ViewHold
         // Get the dimensions of the View
         int targetW = viewHolder.getPreview_image().getWidth();
         int targetH = viewHolder.getPreview_image().getHeight();
-        String PhotoPath = mMappingdataSource.getClothes(mMappingDataSet.get(position).getClothes_id()).getPicture();
+        String PhotoPath = mMappingdataSource.getClothes(mMappingDataSet.get(position).getClothes_id()).getPicturePath();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();

@@ -31,21 +31,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
 import ch.meienberger.android.SQL.ClothesDataSource;
 
 import ch.meienberger.android.common.logger.Log;
-import ch.meienberger.android.laundrycheck.Fragments.ClothesinventoryRecyclerViewFragment;
 import ch.meienberger.android.laundrycheck.custom_class_objects.Clothes;
 import ch.meienberger.android.laundrycheck.Fragments.ClothesDetailViewFragment;
 import ch.meienberger.android.laundrycheck.R;
+
+import static ch.meienberger.android.common.common.modifyOrientation;
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
@@ -150,7 +151,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             String tmp_string = Long.toString(mDataSet.get(position).getId());
             viewHolder.getId().setText(tmp_string);
 
-            Bitmap curBitmap = mbitmaps.get(mDataSet.get(position).getPicture());
+            Bitmap curBitmap = BitmapFactory.decodeFile(mDataSet.get(position).getBitmapPath());
             if(curBitmap == null) {
                 //Create for all preview pictures a own Task for getting the right resolution
                 //Set Picturepreview by a new thread
@@ -159,7 +160,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
                         String.valueOf(position),
                         String.valueOf(mparentFragment.getResources().getDimensionPixelSize(R.dimen.image_preview_with)),
                         String.valueOf(mparentFragment.getResources().getDimensionPixelSize(R.dimen.list_item_height)),
-                        mDataSet.get(position).getPicture()
+                        mDataSet.get(position).getPicturePath()
                 );
             }else{
                 //Set bitmap to the image viewholder
@@ -208,10 +209,22 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             builder.setNegativeButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+            try {
+                //delete picture
+                File oldPhotoFile = new File(toDeleteClothes.getPicturePath());
+                oldPhotoFile.delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                    //delete picture
-                    File oldPhotoFile = new File(toDeleteClothes.getPicture());
-                    oldPhotoFile.delete();
+            try {
+                //delete bitmap
+                File oldBitmapFile = new File(toDeleteClothes.getPicturePath().replace(".jpg",Clothes.BITMAP_ENDING));
+                oldBitmapFile.delete();
+            } catch (Exception e) {
+                     e.printStackTrace();
+            }
+
 
                     //delete from DB
                     mdataSource.open();
@@ -236,7 +249,7 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
         }
 
         public void updatePreviewpicture(int position, Bitmap bitmap) {
-            String curPicturepath = mDataSet.get(position).getPicture();
+            String curPicturepath = mDataSet.get(position).getPicturePath();
             if (!curPicturepath.isEmpty()){
                 mbitmaps.put(curPicturepath,bitmap);
                 notifyItemChanged(position);
@@ -303,6 +316,31 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
                 bmOptions.inSampleSize = scaleFactor;
 
                 Bitmap bitmap = BitmapFactory.decodeFile(picturepath.replace("file:",""), bmOptions);
+                try {
+                    modifyOrientation(bitmap,picturepath.replace("file:",""));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                //Save bitmap to Storage
+                FileOutputStream out = null;
+                try {
+                    out = new FileOutputStream(picturepath.replace(".jpg",Clothes.BITMAP_ENDING));
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // PNG is a lossless format, the compression factor (100) is ignored
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (out != null) {
+                            out.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
 
 
                 return new TaskResult(bitmap,position);

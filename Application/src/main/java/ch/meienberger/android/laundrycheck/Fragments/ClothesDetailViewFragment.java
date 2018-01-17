@@ -27,10 +27,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 import ch.meienberger.android.SQL.ClothesDataSource;
 import ch.meienberger.android.common.logger.Log;
@@ -39,8 +39,8 @@ import ch.meienberger.android.laundrycheck.R;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static ch.meienberger.android.common.common.modifyOrientation;
 import static ch.meienberger.android.laundrycheck.Fragments.SettingsViewFragment.PREF_USE_RFID;
-import static ch.meienberger.android.laundrycheck.R.dimen.preview_image_height;
 
 public class ClothesDetailViewFragment extends Fragment {
 
@@ -161,8 +161,12 @@ public class ClothesDetailViewFragment extends Fragment {
         }
 
         //set picture
-        if (!mClothes.getPicture().equalsIgnoreCase("")){
-            setPic();
+        if (!mClothes.getPicturePath().equalsIgnoreCase("")){
+            try {
+                setPic();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         //get backup of clothes to check changes
@@ -234,19 +238,22 @@ public class ClothesDetailViewFragment extends Fragment {
         return image;
     }
 
-    private void setPic() {
+    private void setPic() throws IOException {
+
         // Get the dimensions of the View
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         int targetW = metrics.widthPixels;
         int targetH = getResources().getDimensionPixelSize(R.dimen.preview_image_height);
-        String PhotoPath = mClothes.getPicture();
+        String PhotoPath = mClothes.getPicturePath();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
+
+
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -262,7 +269,59 @@ public class ClothesDetailViewFragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
 
         Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
+
         mImageViewPreview.setImageBitmap(bitmap);
+    }
+
+    public Bitmap prepairPicture(){
+
+        // Get the dimensions of the View
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        int targetW = metrics.widthPixels;
+        int targetH = getResources().getDimensionPixelSize(R.dimen.preview_image_height);
+        String PhotoPath = mClothes.getPicturePath();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
+
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = 1;
+        if (photoH > targetH || photoW > targetW)
+        {
+            scaleFactor = photoW / targetW;
+        }
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
+
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(PhotoPath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out); // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return bitmap;
     }
 
     @Override
@@ -274,13 +333,17 @@ public class ClothesDetailViewFragment extends Fragment {
         }
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             //delete old photo
-            File oldPhotoFile = new File(mClothes.getPicture());
+            File oldPhotoFile = new File(mClothes.getPicturePath());
             oldPhotoFile.delete();
             Log.d(TAG, "Old clothes picture is deleted.");
 
-
             mClothes.setPicture(newCapturedPhotofile.getAbsolutePath());
-            setPic();
+            prepairPicture();
+            try {
+                setPic();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             dataSource.updateClothes(mClothes);
         }
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED) {

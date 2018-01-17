@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 public class Clothes implements Cloneable {
 
+    public static final String BITMAP_ENDING = "_bitmap.png";
 
     private long id = 0;
     private String name = "";
@@ -85,8 +86,12 @@ public class Clothes implements Cloneable {
         this.rfid_id = rfid_id;
     }
 
-    public String getPicture() {
+    public String getPicturePath() {
         return picture;
+    }
+
+    public String getBitmapPath() {
+        return picture.replace(".jpg",BITMAP_ENDING);
     }
 
     public void setPicture(String picture) {
@@ -142,7 +147,7 @@ public class Clothes implements Cloneable {
 
     public boolean checkChanges(Clothes otherClothes){
 
-        if (!this.getPicture().contentEquals(otherClothes.getPicture())){
+        if (!this.getPicturePath().contentEquals(otherClothes.getPicturePath())){
             return true;
         }
         if (this.getClothestype()!=otherClothes.getClothestype()){

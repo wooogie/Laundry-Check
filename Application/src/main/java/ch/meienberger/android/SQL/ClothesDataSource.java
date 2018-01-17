@@ -185,7 +185,7 @@ public class ClothesDataSource {
         ContentValues values = new ContentValues();
         values.put(LaundrycheckDbHelper.COLUMN_NAME, changedClothes.getName());
         values.put(LaundrycheckDbHelper.COLUMN_RFID_ID, changedClothes.getRfid_id());
-        values.put(LaundrycheckDbHelper.COLUMN_PICTURE, changedClothes.getPicture());
+        values.put(LaundrycheckDbHelper.COLUMN_PICTURE, changedClothes.getPicturePath());
         values.put(LaundrycheckDbHelper.COLUMN_WASHCOUNT, changedClothes.getWashcount());
         values.put(LaundrycheckDbHelper.COLUMN_LAST_WASHED, changedClothes.getLast_washed());
         values.put(LaundrycheckDbHelper.COLUMN_PIECES, changedClothes.getPieces());
