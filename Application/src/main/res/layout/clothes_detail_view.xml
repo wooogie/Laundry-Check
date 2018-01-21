@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview_image_height"
         android:layout_marginBottom="-70dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <android.support.design.widget.FloatingActionButton

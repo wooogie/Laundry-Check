@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -250,30 +252,24 @@ public class ClothesDetailViewFragment extends Fragment {
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
-
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = 1;
-        if (photoH > targetH || photoW > targetW)
-        {
-            scaleFactor = photoW / targetW;
-        }
-
-        // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
+        Bitmap original_bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
+        Matrix matrix = new Matrix();
+        Bitmap bitmap;
+
+        if (original_bitmap.getWidth() >= original_bitmap.getHeight()){
+            matrix.setRectToRect(new RectF(0, 0, original_bitmap.getWidth(), original_bitmap.getHeight()), new RectF(0, 0, targetW, targetH), Matrix.ScaleToFit.CENTER);
+            bitmap = Bitmap.createBitmap(original_bitmap, 0, 0, original_bitmap.getWidth(), original_bitmap.getHeight(), matrix, true);
+        } else{
+            matrix.setRectToRect(new RectF(0, 0, original_bitmap.getWidth(), original_bitmap.getHeight()), new RectF(0, 0, targetH, targetW), Matrix.ScaleToFit.CENTER);
+            bitmap = Bitmap.createBitmap(original_bitmap, 0, 0, original_bitmap.getWidth(), original_bitmap.getHeight(), matrix, true);
+        }
 
         mImageViewPreview.setImageBitmap(bitmap);
     }
 
-    public Bitmap prepairPicture(){
+    public Bitmap prepairPicture() throws IOException {
 
         // Get the dimensions of the View
         DisplayMetrics metrics = new DisplayMetrics();
@@ -286,24 +282,33 @@ public class ClothesDetailViewFragment extends Fragment {
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
-
+        BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
 
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = 1;
-        if (photoH > targetH || photoW > targetW)
+        int scaleFactorW = 1;
+        if (photoW > targetW)
         {
-            scaleFactor = photoW / targetW;
+            scaleFactorW = photoW / targetW;
         }
+
+        int scaleFactorH = 1;
+        if (photoH > targetH)
+        {
+            scaleFactorH = photoH / targetH;
+        }
+
+
+        int scaleFactor = Math.min(scaleFactorH,scaleFactorW);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
         Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:",""), bmOptions);
+        bitmap = modifyOrientation(bitmap,PhotoPath.replace("file:", ""));
 
         FileOutputStream out = null;
         try {
@@ -338,7 +343,11 @@ public class ClothesDetailViewFragment extends Fragment {
             Log.d(TAG, "Old clothes picture is deleted.");
 
             mClothes.setPicture(newCapturedPhotofile.getAbsolutePath());
-            prepairPicture();
+            try {
+                prepairPicture();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             try {
                 setPic();
             } catch (IOException e) {
@@ -351,11 +360,5 @@ public class ClothesDetailViewFragment extends Fragment {
         }
 
         }
-
-
-
-
-
-
 
 }

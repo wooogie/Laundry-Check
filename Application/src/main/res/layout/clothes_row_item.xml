@@ -58,6 +58,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="end"
+            android:scaleType="centerCrop"
             app:srcCompat="@mipmap/ic_image" />
     </RelativeLayout>
 
