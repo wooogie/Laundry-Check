@@ -131,6 +131,7 @@ public class ClothesinventoryRecyclerViewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mAdapter.addItem();
+                mLayoutManager.scrollToPosition(0);
             }
         });
 

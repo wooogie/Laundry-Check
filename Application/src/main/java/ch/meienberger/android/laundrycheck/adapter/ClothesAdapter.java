@@ -151,22 +151,25 @@ public class ClothesAdapter extends RecyclerView.Adapter<ClothesAdapter.ViewHold
             String tmp_string = Long.toString(mDataSet.get(position).getId());
             viewHolder.getId().setText(tmp_string);
 
-            Bitmap curBitmap = BitmapFactory.decodeFile(mDataSet.get(position).getBitmapPath());
-            if(curBitmap == null) {
-                //Create for all preview pictures a own Task for getting the right resolution
-                //Set Picturepreview by a new thread
-                LoadPreviewPictureTask loadpreviewpicture = new LoadPreviewPictureTask();
-                loadpreviewpicture.execute(
-                        String.valueOf(position),
-                        String.valueOf(mparentFragment.getResources().getDimensionPixelSize(R.dimen.image_preview_with)),
-                        String.valueOf(mparentFragment.getResources().getDimensionPixelSize(R.dimen.list_item_height)),
-                        mDataSet.get(position).getPicturePath()
-                );
+            if(!mDataSet.get(position).getBitmapPath().contentEquals("")){
+                Bitmap curBitmap = BitmapFactory.decodeFile(mDataSet.get(position).getBitmapPath());
+                if(curBitmap == null) {
+                    //Create for all preview pictures a own Task for getting the right resolution
+                    //Set Picturepreview by a new thread
+                    LoadPreviewPictureTask loadpreviewpicture = new LoadPreviewPictureTask();
+                    loadpreviewpicture.execute(
+                            String.valueOf(position),
+                            String.valueOf(mparentFragment.getResources().getDimensionPixelSize(R.dimen.image_preview_with)),
+                            String.valueOf(mparentFragment.getResources().getDimensionPixelSize(R.dimen.list_item_height)),
+                            mDataSet.get(position).getPicturePath()
+                    );
+                }else{
+                    //Set bitmap to the image viewholder
+                    viewHolder.getPreview_image().setImageBitmap(curBitmap);
+                }
             }else{
-                //Set bitmap to the image viewholder
-                viewHolder.getPreview_image().setImageBitmap(curBitmap);
+                viewHolder.getPreview_image().setImageDrawable (null);
             }
-
         }
         // END_INCLUDE(recyclerViewOnBindViewHolder)
 

@@ -253,18 +253,7 @@ public class ClothesDetailViewFragment extends Fragment {
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = false;
-        Bitmap original_bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
-
-        Matrix matrix = new Matrix();
-        Bitmap bitmap;
-
-        if (original_bitmap.getWidth() >= original_bitmap.getHeight()){
-            matrix.setRectToRect(new RectF(0, 0, original_bitmap.getWidth(), original_bitmap.getHeight()), new RectF(0, 0, targetW, targetH), Matrix.ScaleToFit.CENTER);
-            bitmap = Bitmap.createBitmap(original_bitmap, 0, 0, original_bitmap.getWidth(), original_bitmap.getHeight(), matrix, true);
-        } else{
-            matrix.setRectToRect(new RectF(0, 0, original_bitmap.getWidth(), original_bitmap.getHeight()), new RectF(0, 0, targetH, targetW), Matrix.ScaleToFit.CENTER);
-            bitmap = Bitmap.createBitmap(original_bitmap, 0, 0, original_bitmap.getWidth(), original_bitmap.getHeight(), matrix, true);
-        }
+        Bitmap bitmap = BitmapFactory.decodeFile(PhotoPath.replace("file:", ""), bmOptions);
 
         mImageViewPreview.setImageBitmap(bitmap);
     }
